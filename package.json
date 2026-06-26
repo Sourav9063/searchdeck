@@ -1,0 +1,197 @@
+{
+  "name": "vs-fzf",
+  "displayName": "VS FZF",
+  "description": "Telescope-style fuzzy file, text, and symbol search in VS Code editor tabs.",
+  "version": "0.0.1",
+  "publisher": "local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:vs-fzf.open",
+    "onCommand:vs-fzf.openNativeQuickOpen",
+    "onCommand:vs-fzf.openNativeTextSearch",
+    "onCommand:vs-fzf.openNativeSymbols",
+    "onCommand:vs-fzf.focusSearch",
+    "onCommand:vs-fzf.newSearchTab",
+    "onCommand:vs-fzf.closeSearchTab",
+    "onCommand:vs-fzf.refresh",
+    "onCommand:vs-fzf.clear",
+    "onCommand:vs-fzf.openSelected",
+    "onCommand:vs-fzf.openSelectedToSide",
+    "onCommand:vs-fzf.copySelectedReference"
+  ],
+  "main": "./out/extension.js",
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "npm run compile && node --test out/test/*.test.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.8",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.5.2"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "vs-fzf.open",
+        "title": "VS FZF: Open Search Tab"
+      },
+      {
+        "command": "vs-fzf.openNativeQuickOpen",
+        "title": "VS FZF: Native Quick Open"
+      },
+      {
+        "command": "vs-fzf.openNativeTextSearch",
+        "title": "VS FZF: Native Text Search"
+      },
+      {
+        "command": "vs-fzf.openNativeSymbols",
+        "title": "VS FZF: Native Workspace Symbols"
+      },
+      {
+        "command": "vs-fzf.focusSearch",
+        "title": "VS FZF: Focus Search"
+      },
+      {
+        "command": "vs-fzf.newSearchTab",
+        "title": "VS FZF: New Search Tab"
+      },
+      {
+        "command": "vs-fzf.closeSearchTab",
+        "title": "VS FZF: Close Search Tab"
+      },
+      {
+        "command": "vs-fzf.refresh",
+        "title": "VS FZF: Refresh"
+      },
+      {
+        "command": "vs-fzf.clear",
+        "title": "VS FZF: Clear Query"
+      },
+      {
+        "command": "vs-fzf.openSelected",
+        "title": "VS FZF: Open Selected"
+      },
+      {
+        "command": "vs-fzf.openSelectedToSide",
+        "title": "VS FZF: Open Selected to Side"
+      },
+      {
+        "command": "vs-fzf.copySelectedReference",
+        "title": "VS FZF: Copy Selected Reference"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "vs-fzf.open",
+        "key": "alt+space",
+        "mac": "alt+space"
+      },
+      {
+        "command": "vs-fzf.openNativeQuickOpen",
+        "key": "alt+p",
+        "mac": "alt+p"
+      },
+      {
+        "command": "vs-fzf.openNativeTextSearch",
+        "key": "alt+g",
+        "mac": "alt+g"
+      },
+      {
+        "command": "vs-fzf.openNativeSymbols",
+        "key": "alt+o",
+        "mac": "alt+o"
+      },
+      {
+        "command": "vs-fzf.newSearchTab",
+        "key": "alt+n",
+        "mac": "alt+n",
+        "when": "webviewId == 'vsFzf.search'"
+      },
+      {
+        "command": "vs-fzf.closeSearchTab",
+        "key": "alt+w",
+        "mac": "alt+w",
+        "when": "webviewId == 'vsFzf.search'"
+      },
+      {
+        "command": "vs-fzf.refresh",
+        "key": "alt+r",
+        "mac": "alt+r",
+        "when": "webviewId == 'vsFzf.search'"
+      },
+      {
+        "command": "vs-fzf.clear",
+        "key": "alt+backspace",
+        "mac": "alt+backspace",
+        "when": "webviewId == 'vsFzf.search'"
+      },
+      {
+        "command": "vs-fzf.openSelectedToSide",
+        "key": "alt+enter",
+        "mac": "alt+enter",
+        "when": "webviewId == 'vsFzf.search'"
+      }
+    ],
+    "configuration": {
+      "title": "VS FZF",
+      "properties": {
+        "vsFzf.search.debounceMs": {
+          "type": "number",
+          "default": 120,
+          "minimum": 0,
+          "description": "Delay before running search after query changes."
+        },
+        "vsFzf.search.maxFiles": {
+          "type": "number",
+          "default": 200,
+          "minimum": 1,
+          "description": "Maximum file results per search tab."
+        },
+        "vsFzf.search.maxText": {
+          "type": "number",
+          "default": 200,
+          "minimum": 1,
+          "description": "Maximum text results per search tab."
+        },
+        "vsFzf.search.maxSymbols": {
+          "type": "number",
+          "default": 200,
+          "minimum": 1,
+          "description": "Maximum symbol results per search tab."
+        },
+        "vsFzf.search.exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/.git/**",
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/build/**",
+            "**/out/**"
+          ],
+          "description": "Glob patterns excluded from VS FZF search."
+        },
+        "vsFzf.preview.maxFileBytes": {
+          "type": "number",
+          "default": 500000,
+          "minimum": 1,
+          "description": "Maximum file size loaded into the preview pane."
+        },
+        "vsFzf.preview.wrap": {
+          "type": "boolean",
+          "default": false,
+          "description": "Wrap preview text."
+        }
+      }
+    }
+  }
+}
