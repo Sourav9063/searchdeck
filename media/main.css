@@ -107,7 +107,7 @@ input {
 .result-row {
   position: relative;
   display: grid;
-  grid-template-columns: 18px minmax(80px, 34%) minmax(0, 1fr);
+  grid-template-columns: minmax(80px, 34%) minmax(0, 1fr);
   width: 100%;
   min-height: 28px;
   gap: 8px;
@@ -133,17 +133,7 @@ input {
 }
 
 .selection-marker {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 18px;
-  color: transparent;
-  font-weight: 700;
-}
-
-.results.query-active .result-row.selected .selection-marker {
-  color: var(--vscode-focusBorder);
+  display: none;
 }
 
 .result-title,
@@ -158,13 +148,18 @@ input {
 }
 
 .result-row.selected .result-detail {
-  position: relative;
-  z-index: 2;
-  overflow: visible;
-  padding-right: 8px;
-  background: var(--vscode-list-focusBackground, var(--vscode-list-hoverBackground));
   color: inherit;
+}
+
+#selected-path-overlay {
+  position: fixed;
+  z-index: 100;
+  width: max-content;
+  padding-right: 8px;
+  color: var(--vscode-list-focusForeground, var(--vscode-editor-foreground));
+  background: var(--vscode-list-focusBackground, var(--vscode-list-hoverBackground));
   white-space: nowrap;
+  pointer-events: none;
 }
 
 .preview {

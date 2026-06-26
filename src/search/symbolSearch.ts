@@ -2,11 +2,18 @@ import * as vscode from 'vscode';
 import { fuzzyScore, sortResults } from './ranking';
 import { filterGitIgnored } from './gitIgnore';
 import type { SymbolResult } from './resultTypes';
-import { workspaceRelativePath } from './workspacePaths';
+import { excludeGlob, workspaceRelativePath } from './workspacePaths';
+
+let typescriptProviderActivation: Promise<void> | undefined;
 
 export async function searchSymbols(query: string, maxResults: number, token: vscode.CancellationToken): Promise<SymbolResult[]> {
   const trimmed = query.trim();
   if (!trimmed || token.isCancellationRequested) {
+    return [];
+  }
+
+  await activateTypescriptProvider();
+  if (token.isCancellationRequested) {
     return [];
   }
 
@@ -43,4 +50,24 @@ export async function searchSymbols(query: string, maxResults: number, token: vs
   });
 
   return sortResults(await filterGitIgnored(results, token)).slice(0, maxResults);
+}
+
+async function activateTypescriptProvider(): Promise<void> {
+  typescriptProviderActivation ??= (async () => {
+    const files = await vscode.workspace.findFiles(
+      '**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}',
+      excludeGlob(),
+      1
+    );
+    if (files.length === 0) {
+      return;
+    }
+
+    const extension = vscode.extensions.getExtension('vscode.typescript-language-features');
+    if (extension && !extension.isActive) {
+      await extension.activate();
+    }
+  })();
+
+  await typescriptProviderActivation;
 }

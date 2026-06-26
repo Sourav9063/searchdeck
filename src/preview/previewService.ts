@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import type { PreviewModel, SearchResult } from '../search/resultTypes';
+import { decodeText, languageIdForUri } from '../textFile';
 
 export class PreviewService {
   async preview(result: SearchResult | undefined): Promise<PreviewModel> {
@@ -30,22 +31,35 @@ export class PreviewService {
       };
     }
 
-    const document = await vscode.workspace.openTextDocument(result.uri);
+    let content: string | undefined;
+    try {
+      content = decodeText(await vscode.workspace.fs.readFile(result.uri));
+    } catch {
+      content = undefined;
+    }
+
+    if (content === undefined) {
+      return {
+        uri: result.uri.toString(),
+        relativePath: result.relativePath,
+        content: '',
+        startLine: 0,
+        message: 'Preview unavailable for binary or non-UTF-8 file.'
+      };
+    }
+
+    const documentLines = content.split(/\r?\n/);
     const targetLine = result.line ?? 0;
     const highlightStartCharacter = result.range?.start.character ?? result.character;
     const highlightEndCharacter = result.range?.end.character;
     const startLine = Math.max(0, targetLine - 80);
-    const endLine = Math.min(document.lineCount - 1, targetLine + 160);
-    const lines: string[] = [];
-
-    for (let line = startLine; line <= endLine; line += 1) {
-      lines.push(document.lineAt(line).text);
-    }
+    const endLine = Math.min(documentLines.length - 1, targetLine + 160);
+    const lines = documentLines.slice(startLine, endLine + 1);
 
     return {
       uri: result.uri.toString(),
       relativePath: result.relativePath,
-      languageId: document.languageId,
+      languageId: languageIdForUri(result.uri),
       content: lines.join('\n'),
       startLine,
       highlightLine: targetLine,

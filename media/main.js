@@ -154,6 +154,9 @@
     }
   }, true);
 
+  window.addEventListener('resize', renderSelectedPathOverlay);
+  resultsRoot.addEventListener('scroll', renderSelectedPathOverlay, true);
+
   window.addEventListener('message', (event) => {
     const message = event.data;
 
@@ -260,8 +263,6 @@
 
         const marker = document.createElement('span');
         marker.className = 'selection-marker';
-        marker.textContent = result.id === state.selectedResultId && currentQuery().trim() ? '>' : '';
-        marker.title = result.id === state.selectedResultId && currentQuery().trim() ? 'Previewing this result' : '';
 
         row.append(marker, title, detail);
         row.addEventListener('click', () => selectResult(result.id));
@@ -275,6 +276,29 @@
 
     const selected = resultsRoot.querySelector('.result-row.selected');
     selected?.scrollIntoView({ block: 'nearest' });
+    renderSelectedPathOverlay();
+  }
+
+  function renderSelectedPathOverlay() {
+    document.getElementById('selected-path-overlay')?.remove();
+
+    const selected = selectedResult();
+    const selectedDetail = resultsRoot.querySelector('.result-row.selected .result-detail');
+    if (!selected || !selectedDetail) {
+      return;
+    }
+
+    const bounds = selectedDetail.getBoundingClientRect();
+    const overlay = document.createElement('div');
+    overlay.id = 'selected-path-overlay';
+    overlay.textContent = selected.relativePath;
+    overlay.title = selected.relativePath;
+    overlay.style.left = `${bounds.left}px`;
+    overlay.style.top = `${bounds.top}px`;
+    overlay.style.height = `${bounds.height}px`;
+    overlay.style.lineHeight = `${bounds.height}px`;
+    overlay.style.backgroundColor = 'var(--vscode-list-focusBackground, var(--vscode-list-hoverBackground))';
+    document.body.appendChild(overlay);
   }
 
   function renderPreview() {

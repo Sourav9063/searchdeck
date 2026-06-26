@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { decodeText } from '../textFile';
 import { fuzzyScore, sortResults } from './ranking';
 import { filterGitIgnoredUris } from './gitIgnore';
 import type { TextResult } from './resultTypes';
@@ -22,23 +23,24 @@ export async function searchText(query: string, maxResults: number, token: vscod
       break;
     }
 
-    let document: vscode.TextDocument;
+    let content: string | undefined;
     try {
-      document = await vscode.workspace.openTextDocument(uri);
+      content = decodeText(await vscode.workspace.fs.readFile(uri));
     } catch {
       continue;
     }
 
-    if (document.isUntitled || document.lineCount === 0) {
+    if (content === undefined || content.length === 0) {
       continue;
     }
 
-    for (let line = 0; line < document.lineCount && results.length < maxResults; line += 1) {
+    const lines = content.split(/\r?\n/);
+    for (let line = 0; line < lines.length && results.length < maxResults; line += 1) {
       if (token.isCancellationRequested) {
         break;
       }
 
-      const text = document.lineAt(line).text;
+      const text = lines[line];
       const character = text.toLowerCase().indexOf(needle);
       if (character < 0) {
         continue;
