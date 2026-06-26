@@ -233,7 +233,6 @@
 
         const marker = document.createElement('span');
         marker.className = 'selection-marker';
-        marker.textContent = result.id === state.selectedResultId ? '>' : '';
 
         row.append(marker, title, detail);
         row.addEventListener('click', () => selectResult(result.id));
