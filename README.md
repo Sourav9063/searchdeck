@@ -1,10 +1,10 @@
 # VS FZF
 
+![VS FZF icon](media/icon.png)
+
 Telescope-style search for VS Code.
 
 VS FZF opens inside the editor area as a real tab. Search results stay where you left them, previews stay visible, and multiple searches can remain open while you keep working.
-
-![VS FZF interface](https://img.shields.io/badge/editor--tab-files%20%7C%20text%20%7C%20symbols-blue)
 
 ## Why Install
 

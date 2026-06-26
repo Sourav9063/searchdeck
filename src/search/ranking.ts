@@ -76,7 +76,8 @@ export function scorePath(query: string, relativePath: string): number {
 
   const pathScore = fuzzyScore(query, relativePath).score;
   const nameScore = fuzzyScore(query, basename(relativePath)).score;
-  return Math.max(pathScore, nameScore + 40);
+  const boostedNameScore = nameScore > 0 ? nameScore + 40 : 0;
+  return Math.max(pathScore, boostedNameScore);
 }
 
 export function sortResults<T extends SearchResult>(results: T[]): T[] {

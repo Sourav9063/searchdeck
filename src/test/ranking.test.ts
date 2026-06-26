@@ -17,6 +17,10 @@ test('scorePath rewards basename matches', () => {
   assert.ok(basenameMatch > pathOnlyMatch);
 });
 
+test('scorePath does not match unrelated paths', () => {
+  assert.equal(scorePath('zzzzzz', 'src/search/ranking.ts'), 0);
+});
+
 test('buildSections reorders sections by strongest result category', () => {
   const sections = buildSections('needle', {
     files: [result('files', 'a.ts', 10)],
@@ -52,4 +56,3 @@ function result(section: SearchResult['section'], label: string, score: number):
     ...(section === 'symbols' ? { symbolName: label, kind: 'Function' } : {})
   } as SearchResult;
 }
-

@@ -60,43 +60,43 @@
       return;
     }
 
-    if (event.altKey && lowerKey(event) === 'n') {
+    if (event.altKey && keyMatches(event, 'n')) {
       event.preventDefault();
       vscode.postMessage({ type: 'newTab' });
       return;
     }
 
-    if (event.altKey && lowerKey(event) === 'w') {
+    if (event.altKey && keyMatches(event, 'w')) {
       event.preventDefault();
       vscode.postMessage({ type: 'close' });
       return;
     }
 
-    if (event.altKey && lowerKey(event) === 'r') {
+    if (event.altKey && keyMatches(event, 'r')) {
       event.preventDefault();
       vscode.postMessage({ type: 'refresh' });
       return;
     }
 
-    if ((event.altKey && !event.shiftKey && lowerKey(event) === 'j') || event.key === 'ArrowDown' || (event.ctrlKey && lowerKey(event) === 'n')) {
+    if ((event.altKey && !event.shiftKey && keyMatches(event, 'j')) || event.key === 'ArrowDown' || (event.ctrlKey && keyMatches(event, 'n'))) {
       event.preventDefault();
       moveSelection(1);
       return;
     }
 
-    if ((event.altKey && !event.shiftKey && lowerKey(event) === 'k') || event.key === 'ArrowUp' || (event.ctrlKey && lowerKey(event) === 'p')) {
+    if ((event.altKey && !event.shiftKey && keyMatches(event, 'k')) || event.key === 'ArrowUp' || (event.ctrlKey && keyMatches(event, 'p'))) {
       event.preventDefault();
       moveSelection(-1);
       return;
     }
 
-    if (event.altKey && event.shiftKey && lowerKey(event) === 'j') {
+    if (event.altKey && event.shiftKey && keyMatches(event, 'j')) {
       event.preventDefault();
       moveSection(1);
       return;
     }
 
-    if (event.altKey && event.shiftKey && lowerKey(event) === 'k') {
+    if (event.altKey && event.shiftKey && keyMatches(event, 'k')) {
       event.preventDefault();
       moveSection(-1);
       return;
@@ -114,19 +114,19 @@
       return;
     }
 
-    if (event.altKey && lowerKey(event) === 'f') {
+    if (event.altKey && keyMatches(event, 'f')) {
       event.preventDefault();
       focusSection('files');
       return;
     }
 
-    if (event.altKey && lowerKey(event) === 't') {
+    if (event.altKey && keyMatches(event, 't')) {
       event.preventDefault();
       focusSection('text');
       return;
     }
 
-    if (event.altKey && lowerKey(event) === 's') {
+    if (event.altKey && keyMatches(event, 's')) {
       event.preventDefault();
       focusSection('symbols');
       return;
@@ -136,7 +136,7 @@
       event.preventDefault();
       moveSection(event.shiftKey ? -1 : 1);
     }
-  });
+  }, true);
 
   window.addEventListener('message', (event) => {
     const message = event.data;
@@ -421,8 +421,9 @@
     return state.sections.flatMap((section) => section.results);
   }
 
-  function lowerKey(event) {
-    return event.key.toLowerCase();
+  function keyMatches(event, key) {
+    const expected = key.toLowerCase();
+    return event.key.toLowerCase() === expected || event.code === `Key${expected.toUpperCase()}`;
   }
 
   function clamp(value, min, max) {
