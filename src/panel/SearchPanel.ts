@@ -129,7 +129,9 @@ export class SearchPanel {
       return;
     }
 
-    await vscode.env.clipboard.writeText(referencePath(result.uri, result.section === 'files' ? undefined : result.line));
+    const reference = referencePath(result.uri, result.section === 'files' ? undefined : result.line);
+    await vscode.env.clipboard.writeText(reference);
+    vscode.window.setStatusBarMessage(`$(check) Copied reference: ${reference}`, 3000);
   }
 
   private async handleMessage(message: WebviewToExtensionMessage): Promise<void> {

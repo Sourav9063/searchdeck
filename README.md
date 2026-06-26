@@ -1,6 +1,6 @@
 # SearchDeck
 
-Telescope-style search for VS Code.
+Telescope-style search for VS Code with agent-ready `@path` references.
 
 SearchDeck opens inside the editor area as a real tab. Search results stay where you left them, previews stay visible, and multiple searches can remain open while you keep working.
 
@@ -13,7 +13,7 @@ VS Code already has great Quick Open, text search, and symbol search. SearchDeck
 - Search files, text, and symbols from one input.
 - Preview selected files without leaving the search tab.
 - Jump with fast Telescope-like keys.
-- Copy project-relative references like `@src/abc.js` with one shortcut.
+- Send exact files and lines to coding agents by copying references like `@src/abc.js:42` with one shortcut.
 - Use VS Code native commands when you want the built-in overlays.
 
 ## What It Looks Like
@@ -74,14 +74,27 @@ Move selection and the right side updates immediately.
 - Text result previews matching line.
 - Symbol result previews symbol location.
 
-### Copy `@` References
+### Agent-Ready `@` References
 
-Press `Shift+Enter` to copy selected result as a project-relative reference:
+SearchDeck turns any selected result into a precise reference for agent programming. Press `Shift+Enter`, then paste directly into your coding-agent prompt or chat:
 
 ```text
 @src/abc.js
 @src/abc.js:42
 ```
+
+- File results copy the project-relative `@path`.
+- Text and symbol results include the exact line number.
+- No manual path typing, file browsing, or ambiguous filenames.
+- Copy several references to build focused multi-file prompts quickly.
+
+Example agent prompt:
+
+```text
+Compare @src/search/ranking.ts with @src/search/fileSearch.ts:24 and simplify the scoring flow.
+```
+
+This is especially useful with coding agents and assistants that accept `@path` context: SearchDeck finds the relevant code, and the copied reference tells the agent exactly where to look.
 
 Multi-root workspaces include workspace folder name:
 
