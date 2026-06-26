@@ -5,7 +5,9 @@ AGENTS.md
 agents/**
 src/**
 node_modules/**
-out/test/**
+out/**
+!out/extension.js
+.test-out/**
 **/*.map
 **/*.ts
 tsconfig.json
