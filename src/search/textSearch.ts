@@ -3,19 +3,21 @@ import { decodeText } from '../textFile';
 import { fuzzyScore, sortResults } from './ranking';
 import { filterGitIgnoredUris } from './gitIgnore';
 import type { TextResult } from './resultTypes';
-import { excludeGlob, workspaceRelativePath } from './workspacePaths';
+import { workspaceRelativePath } from './workspacePaths';
 
-export async function searchText(query: string, maxResults: number, token: vscode.CancellationToken): Promise<TextResult[]> {
+export async function searchText(
+  query: string,
+  maxResults: number,
+  workspaceFiles: readonly vscode.Uri[],
+  token: vscode.CancellationToken
+): Promise<TextResult[]> {
   const trimmed = query.trim();
   if (!trimmed) {
     return [];
   }
 
   const results: TextResult[] = [];
-  const files = await filterGitIgnoredUris(
-    await vscode.workspace.findFiles('**/*', excludeGlob(), Math.max(maxResults * 12, 1000), token),
-    token
-  );
+  const files = await filterGitIgnoredUris(workspaceFiles, token);
   const needle = trimmed.toLowerCase();
 
   for (const uri of files) {
@@ -34,6 +36,7 @@ export async function searchText(query: string, maxResults: number, token: vscod
       continue;
     }
 
+    const relativePath = workspaceRelativePath(uri);
     const lines = content.split(/\r?\n/);
     for (let line = 0; line < lines.length && results.length < maxResults; line += 1) {
       if (token.isCancellationRequested) {
@@ -46,7 +49,6 @@ export async function searchText(query: string, maxResults: number, token: vscod
         continue;
       }
 
-      const relativePath = workspaceRelativePath(uri);
       const range = new vscode.Range(line, character, line, character + trimmed.length);
       const previewText = text.trim();
       const score = fuzzyScore(trimmed, previewText).score + fuzzyScore(trimmed, relativePath).score;

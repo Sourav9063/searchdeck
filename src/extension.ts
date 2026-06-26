@@ -6,5 +6,3 @@ export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(...initializeRecentFiles(context));
   context.subscriptions.push(...registerCommands(context));
 }
-
-export function deactivate(): void {}

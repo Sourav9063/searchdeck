@@ -10,11 +10,11 @@ export function initializeRecentFiles(extensionContext: vscode.ExtensionContext)
   recentUris = extensionContext.workspaceState.get<string[]>(storageKey, []);
 
   seedOpenEditors();
-  recordUri(vscode.window.activeTextEditor?.document.uri);
+  recordUris([vscode.window.activeTextEditor?.document.uri]);
 
   return [
     vscode.window.onDidChangeActiveTextEditor((editor) => {
-      recordUri(editor?.document.uri);
+      recordUris([editor?.document.uri]);
     }),
     vscode.window.tabGroups.onDidChangeTabs(() => {
       seedOpenEditors();
@@ -27,29 +27,37 @@ export function recentFileUris(): vscode.Uri[] {
 }
 
 export function recordRecentFile(uri: vscode.Uri): void {
-  recordUri(uri);
+  recordUris([uri]);
 }
 
 function seedOpenEditors(): void {
+  const uris: Array<vscode.Uri | undefined> = [];
+
   for (const group of vscode.window.tabGroups.all) {
     for (const tab of group.tabs) {
       if (tab.input instanceof vscode.TabInputText) {
-        recordUri(tab.input.uri);
+        uris.push(tab.input.uri);
       }
     }
   }
 
   for (const document of vscode.workspace.textDocuments) {
-    recordUri(document.uri);
+    uris.push(document.uri);
   }
+
+  recordUris(uris);
 }
 
-function recordUri(uri: vscode.Uri | undefined): void {
-  if (!uri || !vscode.workspace.getWorkspaceFolder(uri)) {
+function recordUris(uris: Array<vscode.Uri | undefined>): void {
+  const values = uris
+    .filter((uri): uri is vscode.Uri => Boolean(uri && vscode.workspace.getWorkspaceFolder(uri)))
+    .map((uri) => uri.toString())
+    .reverse();
+  const next = [...new Set([...values, ...recentUris])].slice(0, maxRecentFiles);
+  if (next.length === recentUris.length && next.every((value, index) => value === recentUris[index])) {
     return;
   }
 
-  const value = uri.toString();
-  recentUris = [value, ...recentUris.filter((candidate) => candidate !== value)].slice(0, maxRecentFiles);
+  recentUris = next;
   void context?.workspaceState.update(storageKey, recentUris);
 }

@@ -148,10 +148,6 @@ input {
   border-left-color: var(--vscode-focusBorder);
 }
 
-.selection-marker {
-  display: none;
-}
-
 .result-title,
 .result-detail {
   overflow: hidden;
@@ -173,7 +169,6 @@ input {
   width: max-content;
   padding-right: 8px;
   color: var(--vscode-list-focusForeground, var(--vscode-editor-foreground));
-  background: var(--vscode-list-focusBackground, var(--vscode-list-hoverBackground));
   white-space: nowrap;
   pointer-events: none;
 }

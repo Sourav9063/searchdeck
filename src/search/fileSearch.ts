@@ -7,10 +7,11 @@ import { excludeGlob, workspaceRelativePath } from './workspacePaths';
 
 export class FileSearch {
   private cachedFiles: vscode.Uri[] = [];
-  private cacheReady = false;
+  private cachedLimit = 0;
+  private cacheComplete = false;
 
   async search(query: string, maxResults: number, token: vscode.CancellationToken): Promise<FileResult[]> {
-    const files = await this.getFiles(Math.max(maxResults * 8, 1000), token);
+    const files = await this.workspaceFiles(Math.max(maxResults * 8, 1000), token);
     if (token.isCancellationRequested) {
       return [];
     }
@@ -39,20 +40,26 @@ export class FileSearch {
   }
 
   async refresh(token?: vscode.CancellationToken): Promise<void> {
-    this.cacheReady = false;
+    this.cachedFiles = [];
+    this.cachedLimit = 0;
+    this.cacheComplete = false;
     resetGitIgnoreCache();
-    await this.getFiles(5000, token);
+    await this.workspaceFiles(5000, token);
   }
 
-  private async getFiles(limit: number, token?: vscode.CancellationToken): Promise<vscode.Uri[]> {
-    if (this.cacheReady) {
+  async workspaceFiles(limit: number, token?: vscode.CancellationToken): Promise<readonly vscode.Uri[]> {
+    if (this.cacheComplete || this.cachedLimit >= limit) {
       return this.cachedFiles;
     }
 
     const files = await vscode.workspace.findFiles('**/*', excludeGlob(), limit, token);
-    this.cachedFiles = files;
-    this.cacheReady = true;
-    return this.cachedFiles;
+    if (!token?.isCancellationRequested && limit >= this.cachedLimit) {
+      this.cachedFiles = files;
+      this.cachedLimit = limit;
+      this.cacheComplete = files.length < limit;
+    }
+
+    return files;
   }
 }
 

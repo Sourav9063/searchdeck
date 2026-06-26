@@ -23,5 +23,4 @@ export interface ExtensionToWebviewState {
 
 export type ExtensionToWebviewMessage =
   | ExtensionToWebviewState
-  | { type: 'focusSearch' }
-  | { type: 'command'; command: 'open' | 'openSide' | 'copyReference' | 'clear' | 'refresh' | 'close' | 'newTab' };
+  | { type: 'focusSearch' };

@@ -6,6 +6,8 @@
   const previewPath = document.getElementById('preview-path');
   const previewLang = document.getElementById('preview-lang');
   const previewContent = document.getElementById('preview-content');
+  const tokenPattern = /("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\/\/.*|#.*|\b(?:const|let|var|function|class|interface|type|import|from|export|return|if|else|for|while|switch|case|break|continue|async|await|new|try|catch|throw|extends|implements|public|private|protected|readonly|static|def|elif|fn|struct|enum|impl|use|pub|mod|package|func|map|range)\b|\b(?:true|false|null|undefined|None|nil)\b|\b\d+(?:\.\d+)?\b)/g;
+  const hashSyntaxLanguages = new Set(['css', 'scss']);
 
   let state = {
     query: '',
@@ -15,15 +17,10 @@
     wrapPreview: false
   };
 
-  let suppressInput = false;
   let pendingQuery;
   let pendingSelectedResultId;
 
   search.addEventListener('input', () => {
-    if (suppressInput) {
-      return;
-    }
-
     pendingQuery = search.value;
     pendingSelectedResultId = undefined;
     vscode.postMessage({ type: 'query', query: search.value });
@@ -188,34 +185,11 @@
       return;
     }
 
-    if (message.type === 'command') {
-      handleCommand(message.command);
-    }
   });
-
-  function handleCommand(command) {
-    if (command === 'open') {
-      vscode.postMessage({ type: 'open' });
-    } else if (command === 'openSide') {
-      vscode.postMessage({ type: 'open', side: true });
-    } else if (command === 'copyReference') {
-      vscode.postMessage({ type: 'copyReference' });
-    } else if (command === 'clear') {
-      setQuery('');
-    } else if (command === 'refresh') {
-      vscode.postMessage({ type: 'refresh' });
-    } else if (command === 'close') {
-      vscode.postMessage({ type: 'close' });
-    } else if (command === 'newTab') {
-      vscode.postMessage({ type: 'newTab' });
-    }
-  }
 
   function render() {
     if (pendingQuery === undefined && search.value !== state.query) {
-      suppressInput = true;
       search.value = state.query;
-      suppressInput = false;
     }
 
     renderResults();
@@ -224,8 +198,6 @@
 
   function renderResults() {
     resultsRoot.replaceChildren();
-    resultsRoot.classList.toggle('query-active', Boolean(currentQuery().trim()));
-
     for (const section of state.sections.filter((candidate) => candidate.results.length > 0)) {
       const sectionElement = document.createElement('section');
       sectionElement.className = 'result-section';
@@ -261,10 +233,7 @@
         detail.textContent = result.id === state.selectedResultId ? result.relativePath : result.previewText || result.description;
         detail.title = result.relativePath;
 
-        const marker = document.createElement('span');
-        marker.className = 'selection-marker';
-
-        row.append(marker, title, detail);
+        row.append(title, detail);
         row.addEventListener('click', () => selectResult(result.id));
         row.addEventListener('dblclick', () => vscode.postMessage({ type: 'open' }));
         body.appendChild(row);
@@ -287,7 +256,7 @@
 
     const selected = selectedResult();
     const selectedDetail = resultsRoot.querySelector('.result-row.selected .result-detail');
-    if (!selected || !selectedDetail) {
+    if (!selected || !selectedDetail || selectedDetail.scrollWidth <= selectedDetail.clientWidth) {
       return;
     }
 
@@ -415,12 +384,12 @@
       return [{ text: ' ', className: 'tok-text', start: 0 }];
     }
 
-    const pattern = /("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\/\/.*|#.*|\b(?:const|let|var|function|class|interface|type|import|from|export|return|if|else|for|while|switch|case|break|continue|async|await|new|try|catch|throw|extends|implements|public|private|protected|readonly|static|def|elif|fn|struct|enum|impl|use|pub|mod|package|func|map|range)\b|\b(?:true|false|null|undefined|None|nil)\b|\b\d+(?:\.\d+)?\b)/g;
     const tokens = [];
     let index = 0;
     let match;
 
-    while ((match = pattern.exec(line)) !== null) {
+    tokenPattern.lastIndex = 0;
+    while ((match = tokenPattern.exec(line)) !== null) {
       if (match.index > index) {
         tokens.push({ text: line.slice(index, match.index), className: 'tok-text', start: index });
       }
@@ -438,7 +407,7 @@
   }
 
   function tokenClass(text, language) {
-    if (text.startsWith('//') || (text.startsWith('#') && !['css', 'scss'].includes(language))) {
+    if (text.startsWith('//') || (text.startsWith('#') && !hashSyntaxLanguages.has(language))) {
       return 'tok-comment';
     }
     if (text.startsWith('"') || text.startsWith("'") || text.startsWith('`')) {

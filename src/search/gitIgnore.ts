@@ -13,35 +13,34 @@ export function resetGitIgnoreCache(): void {
   cachedMatcher = undefined;
 }
 
-export async function filterGitIgnored<T extends { uri: vscode.Uri }>(items: T[], token?: vscode.CancellationToken): Promise<T[]> {
-  const matcher = await loadGitIgnoreMatcher(token);
+export async function filterGitIgnored<T extends { uri: vscode.Uri }>(items: readonly T[], token?: vscode.CancellationToken): Promise<T[]> {
+  const matcher = await loadGitIgnoreMatcher();
+  if (token?.isCancellationRequested) {
+    return [];
+  }
+
   return items.filter((item) => !matcher.ignores(item.uri));
 }
 
-export async function filterGitIgnoredUris(uris: vscode.Uri[], token?: vscode.CancellationToken): Promise<vscode.Uri[]> {
-  const matcher = await loadGitIgnoreMatcher(token);
+export async function filterGitIgnoredUris(uris: readonly vscode.Uri[], token?: vscode.CancellationToken): Promise<vscode.Uri[]> {
+  const matcher = await loadGitIgnoreMatcher();
+  if (token?.isCancellationRequested) {
+    return [];
+  }
+
   return uris.filter((uri) => !matcher.ignores(uri));
 }
 
-export async function isGitIgnoredUri(uri: vscode.Uri, token?: vscode.CancellationToken): Promise<boolean> {
-  const matcher = await loadGitIgnoreMatcher(token);
-  return matcher.ignores(uri);
-}
-
-async function loadGitIgnoreMatcher(token?: vscode.CancellationToken): Promise<GitIgnoreMatcher> {
-  cachedMatcher ??= buildGitIgnoreMatcher(token);
+async function loadGitIgnoreMatcher(): Promise<GitIgnoreMatcher> {
+  cachedMatcher ??= buildGitIgnoreMatcher();
   return cachedMatcher;
 }
 
-async function buildGitIgnoreMatcher(token?: vscode.CancellationToken): Promise<GitIgnoreMatcher> {
-  const ignoreFiles = await vscode.workspace.findFiles('**/.gitignore', undefined, undefined, token);
+async function buildGitIgnoreMatcher(): Promise<GitIgnoreMatcher> {
+  const ignoreFiles = await vscode.workspace.findFiles('**/.gitignore');
   const rules: IgnoreRule[] = [];
 
   for (const uri of ignoreFiles) {
-    if (token?.isCancellationRequested) {
-      break;
-    }
-
     const folder = vscode.workspace.getWorkspaceFolder(uri);
     if (!folder) {
       continue;
@@ -63,18 +62,32 @@ async function buildGitIgnoreMatcher(token?: vscode.CancellationToken): Promise<
 }
 
 class GitIgnoreMatcher {
-  constructor(private readonly rules: IgnoreRule[]) {}
+  private readonly rulesByFolder = new Map<string, IgnoreRule[]>();
+
+  constructor(rules: IgnoreRule[]) {
+    for (const rule of rules) {
+      const key = rule.folder.uri.toString();
+      const folderRules = this.rulesByFolder.get(key) ?? [];
+      folderRules.push(rule);
+      this.rulesByFolder.set(key, folderRules);
+    }
+  }
 
   ignores(uri: vscode.Uri): boolean {
+    const folder = vscode.workspace.getWorkspaceFolder(uri);
+    if (!folder) {
+      return false;
+    }
+
+    const rules = this.rulesByFolder.get(folder.uri.toString());
+    if (!rules) {
+      return false;
+    }
+
+    const relativePath = vscode.workspace.asRelativePath(uri, false).replace(/\\/g, '/');
     let ignored = false;
 
-    for (const rule of this.rules) {
-      const folder = vscode.workspace.getWorkspaceFolder(uri);
-      if (folder?.uri.toString() !== rule.folder.uri.toString()) {
-        continue;
-      }
-
-      const relativePath = vscode.workspace.asRelativePath(uri, false).replace(/\\/g, '/');
+    for (const rule of rules) {
       const scopedPath = scopedRelativePath(relativePath, rule.basePath);
       if (scopedPath === undefined) {
         continue;

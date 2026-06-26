@@ -7,8 +7,6 @@ import { SearchSession } from '../state/SearchSession';
 import { getPanelHtml } from './panelHtml';
 import type { ExtensionToWebviewMessage, WebviewToExtensionMessage } from './messageTypes';
 
-let panelCounter = 0;
-
 export class SearchPanel {
   static readonly viewType = 'vsFzf.search';
   private static activePanel?: SearchPanel;
@@ -49,7 +47,7 @@ export class SearchPanel {
     panel: vscode.WebviewPanel
   ) {
     this.panel = panel;
-    this.session = new SearchSession(`vs-fzf:${Date.now()}:${panelCounter += 1}`);
+    this.session = new SearchSession();
     this.controller = new SearchController(this.session, this);
 
     SearchPanel.panels.add(this);
@@ -75,7 +73,6 @@ export class SearchPanel {
     const sections: SerializedSection[] = this.session.sections.map((section) => ({
       id: section.id,
       title: section.title,
-      score: section.score,
       results: section.results.map(serializeResult)
     }));
 
@@ -94,10 +91,6 @@ export class SearchPanel {
   focusSearch(): void {
     this.panel.reveal();
     void this.panel.webview.postMessage({ type: 'focusSearch' } satisfies ExtensionToWebviewMessage);
-  }
-
-  command(command: 'open' | 'openSide' | 'copyReference' | 'clear' | 'refresh' | 'close' | 'newTab'): void {
-    void this.panel.webview.postMessage({ type: 'command', command } satisfies ExtensionToWebviewMessage);
   }
 
   async refresh(): Promise<void> {
@@ -136,7 +129,7 @@ export class SearchPanel {
       return;
     }
 
-    await vscode.env.clipboard.writeText(referencePath(result.uri));
+    await vscode.env.clipboard.writeText(referencePath(result.uri, result.section === 'files' ? undefined : result.line));
   }
 
   private async handleMessage(message: WebviewToExtensionMessage): Promise<void> {

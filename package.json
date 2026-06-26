@@ -6,32 +6,13 @@
   "publisher": "local",
   "license": "MIT",
   "icon": "media/icon.png",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/your-name/vs-fzf.git"
-  },
   "engines": {
     "vscode": "^1.90.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onCommand:vs-fzf.open",
-    "onCommand:vs-fzf.openNativeQuickOpen",
-    "onCommand:vs-fzf.openNativeTextSearch",
-    "onCommand:vs-fzf.openNativeSymbols",
-    "onCommand:vs-fzf.focusSearch",
-    "onCommand:vs-fzf.newSearchTab",
-    "onCommand:vs-fzf.closeSearchTab",
-    "onCommand:vs-fzf.refresh",
-    "onCommand:vs-fzf.clear",
-    "onCommand:vs-fzf.openSelected",
-    "onCommand:vs-fzf.openSelectedToSide",
-    "onCommand:vs-fzf.copySelectedReference"
-  ],
   "main": "./out/extension.js",
-  "browser": "./out/extension.js",
   "scripts": {
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
@@ -98,12 +79,6 @@
         "command": "vs-fzf.open",
         "key": "alt+space",
         "mac": "alt+space"
-      },
-      {
-        "command": "vs-fzf.open",
-        "key": "alt+space",
-        "mac": "alt+space",
-        "when": "terminalFocus || terminalEditorFocus"
       },
       {
         "command": "vs-fzf.openNativeQuickOpen",

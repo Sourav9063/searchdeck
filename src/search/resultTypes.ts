@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import type * as vscode from 'vscode';
 
 export type SectionId = 'files' | 'text' | 'symbols';
 
@@ -53,19 +53,12 @@ export interface SerializedResult {
   label: string;
   description: string;
   relativePath: string;
-  score: number;
-  line?: number;
-  character?: number;
   previewText?: string;
-  symbolName?: string;
-  containerName?: string;
-  kind?: string;
 }
 
 export interface SerializedSection {
   id: SectionId;
   title: string;
-  score: number;
   results: SerializedResult[];
 }
 
@@ -88,20 +81,11 @@ export function serializeResult(result: SearchResult): SerializedResult {
     section: result.section,
     label: result.label,
     description: result.description,
-    relativePath: result.relativePath,
-    score: result.score,
-    line: result.line,
-    character: result.character
+    relativePath: result.relativePath
   };
 
   if (result.section === 'text') {
     base.previewText = result.previewText;
-  }
-
-  if (result.section === 'symbols') {
-    base.symbolName = result.symbolName;
-    base.containerName = result.containerName;
-    base.kind = result.kind;
   }
 
   return base;

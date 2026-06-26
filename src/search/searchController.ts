@@ -38,7 +38,6 @@ export class SearchController {
     if (queryChanged) {
       this.selectionRevision += 1;
       this.session.selectedResultId = undefined;
-      this.session.focusedSection = 'files';
     }
 
     if (this.debounceTimer) {
@@ -97,7 +96,8 @@ export class SearchController {
         this.applySections(revision, query, grouped);
       });
 
-    const textPromise = searchText(query, maxText, cts.token)
+    const textPromise = this.files.workspaceFiles(Math.max(maxText * 12, 1000), cts.token)
+      .then((files) => searchText(query, maxText, files, cts.token))
       .then((text) => {
         grouped.text = text;
         this.applySections(revision, query, grouped);
@@ -107,7 +107,7 @@ export class SearchController {
         this.applySections(revision, query, grouped);
       });
 
-    await Promise.allSettled([symbolPromise, textPromise]);
+    await Promise.all([symbolPromise, textPromise]);
 
     if (this.isCurrentSearch(revision, query)) {
       const preview = await this.previewService.preview(this.session.getSelectedResult());
@@ -134,10 +134,6 @@ export class SearchController {
     this.selectionRevision = revision;
     this.session.selectedResultId = resultId;
     const result = this.session.getSelectedResult();
-    if (result) {
-      this.session.focusedSection = result.section;
-    }
-
     const preview = await this.previewService.preview(result);
     if (revision !== this.selectionRevision) {
       return;

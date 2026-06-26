@@ -26,7 +26,7 @@ export async function searchSymbols(query: string, maxResults: number, token: vs
     return [];
   }
 
-  const results = symbols.slice(0, Math.max(maxResults * 3, maxResults)).map((symbol, index) => {
+  const results = symbols.slice(0, maxResults * 3).map((symbol, index) => {
     const relativePath = workspaceRelativePath(symbol.location.uri);
     const nameScore = fuzzyScore(trimmed, symbol.name).score;
     const containerScore = symbol.containerName ? fuzzyScore(trimmed, symbol.containerName).score : 0;
