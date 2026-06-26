@@ -67,6 +67,12 @@ async function activateTypescriptProvider(): Promise<void> {
     if (extension && !extension.isActive) {
       await extension.activate();
     }
+
+    await vscode.workspace.openTextDocument(files[0]);
+    await vscode.commands.executeCommand(
+      'vscode.executeDocumentSymbolProvider',
+      files[0]
+    );
   })();
 
   await typescriptProviderActivation;
