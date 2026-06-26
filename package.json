@@ -1,17 +1,52 @@
 {
   "name": "searchdeck",
   "displayName": "SearchDeck",
-  "description": "Telescope-style fuzzy file, text, and symbol search in VS Code editor tabs.",
+  "description": "Persistent, keyboard-first fuzzy file, text, and symbol search in VS Code editor tabs, inspired by Telescope.",
   "version": "0.0.1",
-  "publisher": "local",
+  "publisher": "souravahmed",
+  "author": {
+    "name": "Sourav Ahmed"
+  },
   "license": "MIT",
   "icon": "media/icon.png",
+  "homepage": "https://github.com/Sourav9063/searchdeck",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sourav9063/searchdeck.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Sourav9063/searchdeck/issues"
+  },
   "engines": {
     "vscode": "^1.90.0"
   },
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "searchdeck",
+    "fuzzy search",
+    "file search",
+    "text search",
+    "symbol search",
+    "workspace search",
+    "code search",
+    "telescope",
+    "telescope vscode",
+    "quick open",
+    "keyboard navigation",
+    "persistent search",
+    "editor tab",
+    "file preview"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "activationEvents": [],
+  "galleryBanner": {
+    "color": "#010409",
+    "theme": "dark"
+  },
   "main": "./out/extension.js",
   "scripts": {
     "vscode:prepublish": "npm run esbuild-base -- --minify",
