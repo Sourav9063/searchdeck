@@ -33,6 +33,8 @@ export class PreviewService {
 
     const document = await vscode.workspace.openTextDocument(result.uri);
     const targetLine = result.line ?? 0;
+    const highlightStartCharacter = result.range?.start.character ?? result.character;
+    const highlightEndCharacter = result.range?.end.character;
     const startLine = Math.max(0, targetLine - 80);
     const endLine = Math.min(document.lineCount - 1, targetLine + 160);
     const lines: string[] = [];
@@ -47,8 +49,10 @@ export class PreviewService {
       languageId: document.languageId,
       content: lines.join('\n'),
       startLine,
-      highlightLine: targetLine
+      highlightLine: targetLine,
+      highlightStartCharacter,
+      highlightEndCharacter,
+      highlightLabel: result.section === 'symbols' ? `${result.kind}: ${result.label}` : result.section === 'text' ? 'Text match' : undefined
     };
   }
 }
-

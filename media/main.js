@@ -202,11 +202,14 @@
       header.addEventListener('click', () => focusSection(section.id));
       sectionElement.appendChild(header);
 
+      const body = document.createElement('div');
+      body.className = 'section-body';
+
       if (section.results.length === 0) {
         const empty = document.createElement('div');
         empty.className = 'empty';
         empty.textContent = 'No results';
-        sectionElement.appendChild(empty);
+        body.appendChild(empty);
       }
 
       for (const result of section.results) {
@@ -228,12 +231,17 @@
         detail.className = 'result-detail';
         detail.textContent = result.previewText || result.description;
 
-        row.append(title, detail);
+        const marker = document.createElement('span');
+        marker.className = 'selection-marker';
+        marker.textContent = result.id === state.selectedResultId ? '>' : '';
+
+        row.append(marker, title, detail);
         row.addEventListener('click', () => selectResult(result.id));
         row.addEventListener('dblclick', () => vscode.postMessage({ type: 'open' }));
-        sectionElement.appendChild(row);
+        body.appendChild(row);
       }
 
+      sectionElement.appendChild(body);
       resultsRoot.appendChild(sectionElement);
     }
 
@@ -260,19 +268,109 @@
       line.className = 'preview-line';
       if (lineNumber === preview.highlightLine) {
         line.classList.add('highlight');
+        line.title = preview.highlightLabel || 'Match';
       }
 
       const gutter = document.createElement('span');
       gutter.className = 'gutter';
-      gutter.textContent = String(lineNumber + 1).padStart(4, ' ');
+      gutter.textContent = lineNumber === preview.highlightLine ? `>${String(lineNumber + 1).padStart(3, ' ')}` : String(lineNumber + 1).padStart(4, ' ');
 
       const text = document.createElement('span');
       text.className = 'line-text';
-      text.textContent = lines[index] || ' ';
+      appendHighlightedCode(text, lines[index] || ' ', preview.languageId, lineNumber === preview.highlightLine ? preview : undefined);
 
       line.append(gutter, text);
       previewContent.appendChild(line);
     }
+  }
+
+  function appendHighlightedCode(parent, line, languageId, preview) {
+    const matchStart = typeof preview?.highlightStartCharacter === 'number' ? preview.highlightStartCharacter : -1;
+    const matchEnd = typeof preview?.highlightEndCharacter === 'number' && preview.highlightEndCharacter > matchStart
+      ? preview.highlightEndCharacter
+      : matchStart >= 0 ? matchStart + Math.max(1, state.query.length) : -1;
+    const tokens = tokenizeLine(line, languageId);
+
+    for (const token of tokens) {
+      appendTokenWithMatch(parent, token, matchStart, matchEnd);
+    }
+  }
+
+  function appendTokenWithMatch(parent, token, matchStart, matchEnd) {
+    const tokenStart = token.start;
+    const tokenEnd = token.start + token.text.length;
+
+    if (matchStart < 0 || matchEnd <= tokenStart || matchStart >= tokenEnd) {
+      parent.appendChild(tokenSpan(token.text, token.className));
+      return;
+    }
+
+    const beforeLength = Math.max(0, matchStart - tokenStart);
+    const matchOffset = Math.max(0, matchStart - tokenStart);
+    const matchLength = Math.min(tokenEnd, matchEnd) - Math.max(tokenStart, matchStart);
+    const afterOffset = matchOffset + matchLength;
+
+    if (beforeLength > 0) {
+      parent.appendChild(tokenSpan(token.text.slice(0, beforeLength), token.className));
+    }
+
+    const match = tokenSpan(token.text.slice(matchOffset, afterOffset), `${token.className} match-token`);
+    parent.appendChild(match);
+
+    if (afterOffset < token.text.length) {
+      parent.appendChild(tokenSpan(token.text.slice(afterOffset), token.className));
+    }
+  }
+
+  function tokenSpan(text, className) {
+    const span = document.createElement('span');
+    span.className = className;
+    span.textContent = text || ' ';
+    return span;
+  }
+
+  function tokenizeLine(line, languageId) {
+    const language = String(languageId || '').toLowerCase();
+    if (!line) {
+      return [{ text: ' ', className: 'tok-text', start: 0 }];
+    }
+
+    const pattern = /("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\/\/.*|#.*|\b(?:const|let|var|function|class|interface|type|import|from|export|return|if|else|for|while|switch|case|break|continue|async|await|new|try|catch|throw|extends|implements|public|private|protected|readonly|static|def|elif|fn|struct|enum|impl|use|pub|mod|package|func|map|range)\b|\b(?:true|false|null|undefined|None|nil)\b|\b\d+(?:\.\d+)?\b)/g;
+    const tokens = [];
+    let index = 0;
+    let match;
+
+    while ((match = pattern.exec(line)) !== null) {
+      if (match.index > index) {
+        tokens.push({ text: line.slice(index, match.index), className: 'tok-text', start: index });
+      }
+
+      const text = match[0];
+      tokens.push({ text, className: tokenClass(text, language), start: match.index });
+      index = match.index + text.length;
+    }
+
+    if (index < line.length) {
+      tokens.push({ text: line.slice(index), className: 'tok-text', start: index });
+    }
+
+    return tokens;
+  }
+
+  function tokenClass(text, language) {
+    if (text.startsWith('//') || (text.startsWith('#') && !['css', 'scss'].includes(language))) {
+      return 'tok-comment';
+    }
+    if (text.startsWith('"') || text.startsWith("'") || text.startsWith('`')) {
+      return 'tok-string';
+    }
+    if (/^\d/.test(text)) {
+      return 'tok-number';
+    }
+    if (/^(true|false|null|undefined|None|nil)$/.test(text)) {
+      return 'tok-constant';
+    }
+    return 'tok-keyword';
   }
 
   function setQuery(query) {

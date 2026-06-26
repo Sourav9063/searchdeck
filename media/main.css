@@ -60,13 +60,29 @@ input {
 }
 
 .results {
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
   min-width: 0;
-  overflow: auto;
+  min-height: 0;
+  overflow: hidden;
   border-right: 1px solid var(--vscode-panel-border);
 }
 
 .result-section {
-  padding: 8px 0;
+  display: grid;
+  grid-template-rows: 28px minmax(0, 1fr);
+  min-height: 0;
+  border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+.result-section:last-child {
+  border-bottom: 0;
+}
+
+.section-body {
+  min-height: 0;
+  overflow: auto;
+  padding: 4px 0;
 }
 
 .section-header {
@@ -90,15 +106,16 @@ input {
 
 .result-row {
   display: grid;
-  grid-template-columns: minmax(80px, 34%) minmax(0, 1fr);
+  grid-template-columns: 18px minmax(80px, 34%) minmax(0, 1fr);
   width: 100%;
   min-height: 28px;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
-  padding: 3px 12px;
+  padding: 3px 12px 3px 8px;
   color: inherit;
   background: transparent;
-  border: 0;
+  border: 1px solid transparent;
+  border-left: 3px solid transparent;
   text-align: left;
   cursor: pointer;
 }
@@ -108,8 +125,16 @@ input {
 }
 
 .result-row.selected {
-  color: var(--vscode-list-activeSelectionForeground);
-  background: var(--vscode-list-activeSelectionBackground);
+  color: var(--vscode-list-focusForeground, var(--vscode-editor-foreground));
+  background: var(--vscode-list-focusBackground, var(--vscode-list-hoverBackground));
+  border-color: transparent;
+  border-left-color: var(--vscode-focusBorder);
+}
+
+.selection-marker {
+  color: var(--vscode-descriptionForeground);
+  text-align: center;
+  font-weight: 500;
 }
 
 .result-title,
@@ -180,6 +205,7 @@ input {
 
 .preview-line.highlight {
   background: var(--vscode-editor-lineHighlightBackground);
+  box-shadow: inset 3px 0 0 var(--vscode-focusBorder);
 }
 
 .gutter {
@@ -193,6 +219,30 @@ input {
   min-width: 0;
 }
 
+.match-token {
+  color: var(--vscode-editor-findMatchForeground, var(--vscode-editor-foreground));
+  background: var(--vscode-editor-findMatchHighlightBackground);
+  outline: 1px solid var(--vscode-editor-findMatchBorder, var(--vscode-focusBorder));
+}
+
+.tok-keyword {
+  color: var(--vscode-symbolIcon-keywordForeground, #569cd6);
+}
+
+.tok-string {
+  color: var(--vscode-symbolIcon-stringForeground, #ce9178);
+}
+
+.tok-number,
+.tok-constant {
+  color: var(--vscode-symbolIcon-numberForeground, #b5cea8);
+}
+
+.tok-comment {
+  color: var(--vscode-descriptionForeground);
+  font-style: italic;
+}
+
 @media (max-width: 720px) {
   .content {
     grid-template-columns: 1fr;
@@ -200,8 +250,8 @@ input {
   }
 
   .results {
+    grid-template-rows: repeat(3, minmax(0, 1fr));
     border-right: 0;
     border-bottom: 1px solid var(--vscode-panel-border);
   }
 }
-

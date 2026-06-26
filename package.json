@@ -5,6 +5,10 @@
   "version": "0.0.1",
   "publisher": "local",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-name/vs-fzf.git"
+  },
   "engines": {
     "vscode": "^1.90.0"
   },
@@ -94,6 +98,12 @@
         "mac": "alt+space"
       },
       {
+        "command": "vs-fzf.open",
+        "key": "alt+space",
+        "mac": "alt+space",
+        "when": "terminalFocus || terminalEditorFocus"
+      },
+      {
         "command": "vs-fzf.openNativeQuickOpen",
         "key": "alt+p",
         "mac": "alt+p"
@@ -139,6 +149,11 @@
         "when": "webviewId == 'vsFzf.search'"
       }
     ],
+    "configurationDefaults": {
+      "terminal.integrated.commandsToSkipShell": [
+        "vs-fzf.open"
+      ]
+    },
     "configuration": {
       "title": "VS FZF",
       "properties": {

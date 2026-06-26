@@ -76,6 +76,9 @@ export interface PreviewModel {
   content: string;
   startLine: number;
   highlightLine?: number;
+  highlightStartCharacter?: number;
+  highlightEndCharacter?: number;
+  highlightLabel?: string;
   message?: string;
 }
 
@@ -103,4 +106,3 @@ export function serializeResult(result: SearchResult): SerializedResult {
 
   return base;
 }
-

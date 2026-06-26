@@ -126,7 +126,9 @@ All commands are contributed to VS Code, so users can change them in Keyboard Sh
 | `Alt+R` | Refresh results |
 | `Alt+Backspace` | Clear query |
 
-Some operating systems reserve `Alt` shortcuts. If a key does not reach VS Code, remap that command in Keyboard Shortcuts.
+VS FZF contributes `vs-fzf.open` to `terminal.integrated.commandsToSkipShell`, so `Alt+Space` is handled by VS Code even when the integrated terminal is focused. It also includes a terminal-editor keybinding for terminals opened with `workbench.action.createTerminalEditor`.
+
+Some operating systems reserve `Alt+Space` for the window menu before VS Code can receive it. If the OS captures the key, remap `VS FZF: Open Search Tab` in Keyboard Shortcuts.
 
 ## Commands
 
@@ -226,4 +228,3 @@ Text search in this version scans workspace files from the extension host becaus
 - users who want search results to stay open
 - users who often jump between files, matches, and symbols
 - users who want fast keyboard navigation without losing editor context
-

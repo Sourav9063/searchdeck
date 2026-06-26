@@ -1,0 +1,14 @@
+.vscode/**
+.git/**
+.gitignore
+AGENTS.md
+agents/**
+src/**
+node_modules/**
+out/test/**
+**/*.map
+**/*.ts
+tsconfig.json
+package-lock.json
+npm-debug.log*
+*.vsix
