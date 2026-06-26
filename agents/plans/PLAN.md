@@ -1,8 +1,8 @@
-# VS FZF Telescope-Style VS Code Extension Plan
+# SearchDeck Telescope-Style VS Code Extension Plan
 
 ## Goal
 
-Build VS Code extension named `vs-fzf` that gives Telescope-like search inside normal editor tabs.
+Build VS Code extension named `searchdeck` that gives Telescope-like search inside normal editor tabs.
 
 User opens command with `Alt+Space`. Extension opens editor-area tab containing:
 
@@ -42,9 +42,9 @@ No architecture constraints found beyond `AGENTS.md`.
   - file preview from `workspace.openTextDocument`
   - open result via `window.showTextDocument`
 - Built-in commands remain available as explicit commands/keybindings:
-  - `vs-fzf.native.quickOpen` -> `workbench.action.quickOpen`
-  - `vs-fzf.native.quickTextSearch` -> `workbench.action.quickTextSearch`
-  - `vs-fzf.native.showAllSymbols` -> `workbench.action.showAllSymbols`
+  - `searchdeck.native.quickOpen` -> `workbench.action.quickOpen`
+  - `searchdeck.native.quickTextSearch` -> `workbench.action.quickTextSearch`
+  - `searchdeck.native.showAllSymbols` -> `workbench.action.showAllSymbols`
 
 ## Technical Pushback
 
@@ -134,29 +134,29 @@ Search tab remains open unless user closes it.
 
 Extension commands:
 
-- `vs-fzf.open`
-  - Open new VS FZF search tab.
-- `vs-fzf.openNativeQuickOpen`
+- `searchdeck.open`
+  - Open new SearchDeck search tab.
+- `searchdeck.openNativeQuickOpen`
   - Execute `workbench.action.quickOpen`.
-- `vs-fzf.openNativeTextSearch`
+- `searchdeck.openNativeTextSearch`
   - Execute `workbench.action.quickTextSearch`.
-- `vs-fzf.openNativeSymbols`
+- `searchdeck.openNativeSymbols`
   - Execute `workbench.action.showAllSymbols`.
-- `vs-fzf.focusSearch`
-  - Focus active VS FZF tab search input.
-- `vs-fzf.newSearchTab`
-  - Open another independent VS FZF tab.
-- `vs-fzf.closeSearchTab`
-  - Close active VS FZF tab.
-- `vs-fzf.refresh`
+- `searchdeck.focusSearch`
+  - Focus active SearchDeck tab search input.
+- `searchdeck.newSearchTab`
+  - Open another independent SearchDeck tab.
+- `searchdeck.closeSearchTab`
+  - Close active SearchDeck tab.
+- `searchdeck.refresh`
   - Refresh active search results.
-- `vs-fzf.clear`
+- `searchdeck.clear`
   - Clear active query.
-- `vs-fzf.openSelected`
+- `searchdeck.openSelected`
   - Open selected result.
-- `vs-fzf.openSelectedToSide`
+- `searchdeck.openSelectedToSide`
   - Open selected result beside current group.
-- `vs-fzf.copySelectedReference`
+- `searchdeck.copySelectedReference`
   - Copy selected result as `@project/relative/path` reference.
 
 Webview-only commands, sent through message bridge:
@@ -179,15 +179,15 @@ Use `package.json contributes.keybindings` so users can override in VS Code Keyb
 
 Global:
 
-- `Alt+Space` -> `vs-fzf.open`
-- `Alt+P` -> `vs-fzf.openNativeQuickOpen`
-- `Alt+G` -> `vs-fzf.openNativeTextSearch`
-- `Alt+O` -> `vs-fzf.openNativeSymbols`
+- `Alt+Space` -> `searchdeck.open`
+- `Alt+P` -> `searchdeck.openNativeQuickOpen`
+- `Alt+G` -> `searchdeck.openNativeTextSearch`
+- `Alt+O` -> `searchdeck.openNativeSymbols`
 
-When VS FZF webview focused:
+When SearchDeck webview focused:
 
-- `Alt+N` -> new VS FZF search tab
-- `Alt+W` -> close current VS FZF search tab
+- `Alt+N` -> new SearchDeck search tab
+- `Alt+W` -> close current SearchDeck search tab
 - `Alt+R` -> refresh results
 - `Alt+Backspace` -> clear query
 - `Alt+Enter` -> open selected result to side
@@ -370,7 +370,7 @@ Across sections:
 
 ## State And Multiple Tabs
 
-Each `vs-fzf.open` call creates a new `WebviewPanel`.
+Each `searchdeck.open` call creates a new `WebviewPanel`.
 
 Each panel has:
 
@@ -382,7 +382,7 @@ Each panel has:
 Use unique session id:
 
 ```text
-vs-fzf:<timestamp>:<counter>
+searchdeck:<timestamp>:<counter>
 ```
 
 Use VS Code webview lifecycle:
@@ -397,19 +397,19 @@ No disk persistence in first version. User can keep tabs open for future use dur
 
 Contribute settings:
 
-- `vsFzf.search.debounceMs`
+- `searchDeck.search.debounceMs`
   - default `120`
-- `vsFzf.search.maxFiles`
+- `searchDeck.search.maxFiles`
   - default `200`
-- `vsFzf.search.maxText`
+- `searchDeck.search.maxText`
   - default `200`
-- `vsFzf.search.maxSymbols`
+- `searchDeck.search.maxSymbols`
   - default `200`
-- `vsFzf.search.exclude`
+- `searchDeck.search.exclude`
   - default `["**/.git/**", "**/node_modules/**", "**/dist/**", "**/build/**", "**/out/**"]`
-- `vsFzf.preview.maxFileBytes`
+- `searchDeck.preview.maxFileBytes`
   - default `500000`
-- `vsFzf.preview.wrap`
+- `searchDeck.preview.wrap`
   - default `false`
 
 Do not add many settings in first pass. Keep only performance and preview controls.
@@ -466,8 +466,8 @@ Success checks:
 
 - `npm install`
 - `npm run compile`
-- `vs-fzf.open` command appears in Command Palette.
-- `Alt+Space` opens empty VS FZF tab.
+- `searchdeck.open` command appears in Command Palette.
+- `Alt+Space` opens empty SearchDeck tab.
 
 ### Phase 2: Webview UI Skeleton
 
@@ -482,7 +482,7 @@ Tasks:
 
 Success checks:
 
-- Multiple VS FZF tabs can open.
+- Multiple SearchDeck tabs can open.
 - Tabs preserve query when switching away and back.
 - Keyboard can move through mock results.
 
@@ -543,7 +543,7 @@ Tasks:
   - `workbench.action.quickTextSearch`
   - `workbench.action.showAllSymbols`
 - Add default keybindings.
-- Document that these open native overlays, separate from VS FZF tab.
+- Document that these open native overlays, separate from SearchDeck tab.
 
 Success checks:
 
@@ -591,7 +591,7 @@ Manual:
 - Large repo.
 - Workspace with no symbol provider.
 - Binary/large file selected for preview.
-- Multiple open VS FZF tabs.
+- Multiple open SearchDeck tabs.
 - Keybinding conflicts on macOS/Linux/Windows.
 
 ## Risks

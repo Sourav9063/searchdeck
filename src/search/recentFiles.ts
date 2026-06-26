@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-const storageKey = 'vsFzf.recentFiles';
+const storageKey = 'searchDeck.recentFiles';
 const maxRecentFiles = 200;
 let context: vscode.ExtensionContext | undefined;
 let recentUris: string[] = [];

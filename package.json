@@ -1,6 +1,6 @@
 {
-  "name": "vs-fzf",
-  "displayName": "VS FZF",
+  "name": "searchdeck",
+  "displayName": "SearchDeck",
   "description": "Telescope-style fuzzy file, text, and symbol search in VS Code editor tabs.",
   "version": "0.0.1",
   "publisher": "local",
@@ -26,139 +26,139 @@
   "contributes": {
     "commands": [
       {
-        "command": "vs-fzf.open",
-        "title": "VS FZF: Open Search Tab"
+        "command": "searchdeck.open",
+        "title": "SearchDeck: Open Search Tab"
       },
       {
-        "command": "vs-fzf.openNativeQuickOpen",
-        "title": "VS FZF: Native Quick Open"
+        "command": "searchdeck.openNativeQuickOpen",
+        "title": "SearchDeck: Native Quick Open"
       },
       {
-        "command": "vs-fzf.openNativeTextSearch",
-        "title": "VS FZF: Native Text Search"
+        "command": "searchdeck.openNativeTextSearch",
+        "title": "SearchDeck: Native Text Search"
       },
       {
-        "command": "vs-fzf.openNativeSymbols",
-        "title": "VS FZF: Native Workspace Symbols"
+        "command": "searchdeck.openNativeSymbols",
+        "title": "SearchDeck: Native Workspace Symbols"
       },
       {
-        "command": "vs-fzf.focusSearch",
-        "title": "VS FZF: Focus Search"
+        "command": "searchdeck.focusSearch",
+        "title": "SearchDeck: Focus Search"
       },
       {
-        "command": "vs-fzf.newSearchTab",
-        "title": "VS FZF: New Search Tab"
+        "command": "searchdeck.newSearchTab",
+        "title": "SearchDeck: New Search Tab"
       },
       {
-        "command": "vs-fzf.closeSearchTab",
-        "title": "VS FZF: Close Search Tab"
+        "command": "searchdeck.closeSearchTab",
+        "title": "SearchDeck: Close Search Tab"
       },
       {
-        "command": "vs-fzf.refresh",
-        "title": "VS FZF: Refresh"
+        "command": "searchdeck.refresh",
+        "title": "SearchDeck: Refresh"
       },
       {
-        "command": "vs-fzf.clear",
-        "title": "VS FZF: Clear Query"
+        "command": "searchdeck.clear",
+        "title": "SearchDeck: Clear Query"
       },
       {
-        "command": "vs-fzf.openSelected",
-        "title": "VS FZF: Open Selected"
+        "command": "searchdeck.openSelected",
+        "title": "SearchDeck: Open Selected"
       },
       {
-        "command": "vs-fzf.openSelectedToSide",
-        "title": "VS FZF: Open Selected to Side"
+        "command": "searchdeck.openSelectedToSide",
+        "title": "SearchDeck: Open Selected to Side"
       },
       {
-        "command": "vs-fzf.copySelectedReference",
-        "title": "VS FZF: Copy Selected Reference"
+        "command": "searchdeck.copySelectedReference",
+        "title": "SearchDeck: Copy Selected Reference"
       }
     ],
     "keybindings": [
       {
-        "command": "vs-fzf.open",
+        "command": "searchdeck.open",
         "key": "alt+space",
         "mac": "alt+space"
       },
       {
-        "command": "vs-fzf.openNativeQuickOpen",
+        "command": "searchdeck.openNativeQuickOpen",
         "key": "alt+p",
         "mac": "alt+p"
       },
       {
-        "command": "vs-fzf.openNativeTextSearch",
+        "command": "searchdeck.openNativeTextSearch",
         "key": "alt+g",
         "mac": "alt+g"
       },
       {
-        "command": "vs-fzf.openNativeSymbols",
+        "command": "searchdeck.openNativeSymbols",
         "key": "alt+o",
         "mac": "alt+o"
       },
       {
-        "command": "vs-fzf.newSearchTab",
+        "command": "searchdeck.newSearchTab",
         "key": "alt+n",
         "mac": "alt+n",
-        "when": "webviewId == 'vsFzf.search'"
+        "when": "webviewId == 'searchDeck.search'"
       },
       {
-        "command": "vs-fzf.closeSearchTab",
+        "command": "searchdeck.closeSearchTab",
         "key": "alt+w",
         "mac": "alt+w",
-        "when": "webviewId == 'vsFzf.search'"
+        "when": "webviewId == 'searchDeck.search'"
       },
       {
-        "command": "vs-fzf.refresh",
+        "command": "searchdeck.refresh",
         "key": "alt+r",
         "mac": "alt+r",
-        "when": "webviewId == 'vsFzf.search'"
+        "when": "webviewId == 'searchDeck.search'"
       },
       {
-        "command": "vs-fzf.clear",
+        "command": "searchdeck.clear",
         "key": "alt+backspace",
         "mac": "alt+backspace",
-        "when": "webviewId == 'vsFzf.search'"
+        "when": "webviewId == 'searchDeck.search'"
       },
       {
-        "command": "vs-fzf.openSelectedToSide",
+        "command": "searchdeck.openSelectedToSide",
         "key": "alt+enter",
         "mac": "alt+enter",
-        "when": "webviewId == 'vsFzf.search'"
+        "when": "webviewId == 'searchDeck.search'"
       }
     ],
     "configurationDefaults": {
       "terminal.integrated.commandsToSkipShell": [
-        "vs-fzf.open"
+        "searchdeck.open"
       ]
     },
     "configuration": {
-      "title": "VS FZF",
+      "title": "SearchDeck",
       "properties": {
-        "vsFzf.search.debounceMs": {
+        "searchDeck.search.debounceMs": {
           "type": "number",
           "default": 120,
           "minimum": 0,
           "description": "Delay before running search after query changes."
         },
-        "vsFzf.search.maxFiles": {
+        "searchDeck.search.maxFiles": {
           "type": "number",
           "default": 200,
           "minimum": 1,
           "description": "Maximum file results per search tab."
         },
-        "vsFzf.search.maxText": {
+        "searchDeck.search.maxText": {
           "type": "number",
           "default": 200,
           "minimum": 1,
           "description": "Maximum text results per search tab."
         },
-        "vsFzf.search.maxSymbols": {
+        "searchDeck.search.maxSymbols": {
           "type": "number",
           "default": 200,
           "minimum": 1,
           "description": "Maximum symbol results per search tab."
         },
-        "vsFzf.search.exclude": {
+        "searchDeck.search.exclude": {
           "type": "array",
           "items": {
             "type": "string"
@@ -170,15 +170,15 @@
             "**/build/**",
             "**/out/**"
           ],
-          "description": "Glob patterns excluded from VS FZF search."
+          "description": "Glob patterns excluded from SearchDeck search."
         },
-        "vsFzf.preview.maxFileBytes": {
+        "searchDeck.preview.maxFileBytes": {
           "type": "number",
           "default": 500000,
           "minimum": 1,
           "description": "Maximum file size loaded into the preview pane."
         },
-        "vsFzf.preview.wrap": {
+        "searchDeck.preview.wrap": {
           "type": "boolean",
           "default": false,
           "description": "Wrap preview text."

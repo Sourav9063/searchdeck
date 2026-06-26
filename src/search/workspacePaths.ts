@@ -11,7 +11,7 @@ export function referencePath(uri: vscode.Uri, line?: number): string {
 }
 
 export function excludeGlob(): string {
-  const configured = vscode.workspace.getConfiguration('vsFzf').get<string[]>('search.exclude') ?? [];
+  const configured = vscode.workspace.getConfiguration('searchDeck').get<string[]>('search.exclude') ?? [];
   const patterns = configured.length > 0 ? configured : ['**/.git/**', '**/node_modules/**', '**/dist/**', '**/build/**', '**/out/**'];
   return patterns.length === 1 ? patterns[0] : `{${patterns.join(',')}}`;
 }

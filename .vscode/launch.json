@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run VS FZF Extension",
+      "name": "Run SearchDeck Extension",
       "type": "extensionHost",
       "request": "launch",
       "args": [

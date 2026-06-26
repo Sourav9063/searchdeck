@@ -1,12 +1,12 @@
-# VS FZF
+# SearchDeck
 
 Telescope-style search for VS Code.
 
-VS FZF opens inside the editor area as a real tab. Search results stay where you left them, previews stay visible, and multiple searches can remain open while you keep working.
+SearchDeck opens inside the editor area as a real tab. Search results stay where you left them, previews stay visible, and multiple searches can remain open while you keep working.
 
 ## Why Install
 
-VS Code already has great Quick Open, text search, and symbol search. VS FZF brings those workflows into one persistent, keyboard-first editor tab:
+VS Code already has great Quick Open, text search, and symbol search. SearchDeck brings those workflows into one persistent, keyboard-first editor tab:
 
 - Keep search results open like any other editor tab.
 - Open several independent search tabs for different tasks.
@@ -40,19 +40,19 @@ VS Code already has great Quick Open, text search, and symbol search. VS FZF bri
 
 ### Editor-Tab Search
 
-Run `VS FZF: Open Search Tab` or press `Alt+Space`.
+Run `SearchDeck: Open Search Tab` or press `Alt+Space`.
 
-VS FZF opens as a normal VS Code editor tab. You can switch away, come back later, and keep the same search context.
+SearchDeck opens as a normal VS Code editor tab. You can switch away, come back later, and keep the same search context.
 
 ### Three Search Sections
 
-VS FZF searches:
+SearchDeck searches:
 
 - `Files`: fuzzy path and filename search
 - `Text`: workspace text matches
 - `Symbols`: workspace symbols from installed language extensions
 
-When the input is empty, VS FZF shows file results first, similar to Quick Open behavior.
+When the input is empty, SearchDeck shows file results first, similar to Quick Open behavior.
 
 ### Smart Section Ordering
 
@@ -97,12 +97,12 @@ All commands are contributed to VS Code, so users can change them in Keyboard Sh
 
 | Key | Action |
 | --- | --- |
-| `Alt+Space` | Open VS FZF search tab |
+| `Alt+Space` | Open SearchDeck search tab |
 | `Alt+P` | Open native VS Code Quick Open |
 | `Alt+G` | Open native VS Code text search |
 | `Alt+O` | Open native VS Code workspace symbols |
 
-### Inside VS FZF
+### Inside SearchDeck
 
 | Key | Action |
 | --- | --- |
@@ -119,43 +119,43 @@ All commands are contributed to VS Code, so users can change them in Keyboard Sh
 | `Alt+T` | Jump to Text |
 | `Alt+S` | Jump to Symbols |
 | `Tab` / `Shift+Tab` | Cycle sections |
-| `Alt+N` | New VS FZF tab |
-| `Alt+W` | Close current VS FZF tab |
+| `Alt+N` | New SearchDeck tab |
+| `Alt+W` | Close current SearchDeck tab |
 | `Alt+R` | Refresh results |
 | `Alt+Backspace` | Clear query |
 
-VS FZF contributes `vs-fzf.open` to `terminal.integrated.commandsToSkipShell`, so `Alt+Space` is handled by VS Code even when the integrated terminal is focused. It also includes a terminal-editor keybinding for terminals opened with `workbench.action.createTerminalEditor`.
+SearchDeck contributes `searchdeck.open` to `terminal.integrated.commandsToSkipShell`, so `Alt+Space` is handled by VS Code even when the integrated terminal is focused. It also includes a terminal-editor keybinding for terminals opened with `workbench.action.createTerminalEditor`.
 
-Some operating systems reserve `Alt+Space` for the window menu before VS Code can receive it. If the OS captures the key, remap `VS FZF: Open Search Tab` in Keyboard Shortcuts.
+Some operating systems reserve `Alt+Space` for the window menu before VS Code can receive it. If the OS captures the key, remap `SearchDeck: Open Search Tab` in Keyboard Shortcuts.
 
 ## Commands
 
 | Command | Description |
 | --- | --- |
-| `VS FZF: Open Search Tab` | Open a new persistent search tab |
-| `VS FZF: Native Quick Open` | Run `workbench.action.quickOpen` |
-| `VS FZF: Native Text Search` | Run `workbench.action.quickTextSearch` |
-| `VS FZF: Native Workspace Symbols` | Run `workbench.action.showAllSymbols` |
-| `VS FZF: Focus Search` | Focus active VS FZF input |
-| `VS FZF: New Search Tab` | Open another search tab |
-| `VS FZF: Close Search Tab` | Close active search tab |
-| `VS FZF: Refresh` | Refresh active search results |
-| `VS FZF: Clear Query` | Clear active query |
-| `VS FZF: Open Selected` | Open selected result |
-| `VS FZF: Open Selected to Side` | Open selected result beside current editor |
-| `VS FZF: Copy Selected Reference` | Copy selected result as `@path` |
+| `SearchDeck: Open Search Tab` | Open a new persistent search tab |
+| `SearchDeck: Native Quick Open` | Run `workbench.action.quickOpen` |
+| `SearchDeck: Native Text Search` | Run `workbench.action.quickTextSearch` |
+| `SearchDeck: Native Workspace Symbols` | Run `workbench.action.showAllSymbols` |
+| `SearchDeck: Focus Search` | Focus active SearchDeck input |
+| `SearchDeck: New Search Tab` | Open another search tab |
+| `SearchDeck: Close Search Tab` | Close active search tab |
+| `SearchDeck: Refresh` | Refresh active search results |
+| `SearchDeck: Clear Query` | Clear active query |
+| `SearchDeck: Open Selected` | Open selected result |
+| `SearchDeck: Open Selected to Side` | Open selected result beside current editor |
+| `SearchDeck: Copy Selected Reference` | Copy selected result as `@path` |
 
 ## Settings
 
 | Setting | Default | Description |
 | --- | ---: | --- |
-| `vsFzf.search.debounceMs` | `120` | Delay before running search after typing |
-| `vsFzf.search.maxFiles` | `200` | Max file results |
-| `vsFzf.search.maxText` | `200` | Max text results |
-| `vsFzf.search.maxSymbols` | `200` | Max symbol results |
-| `vsFzf.search.exclude` | common build/vendor folders | Glob patterns excluded from search |
-| `vsFzf.preview.maxFileBytes` | `500000` | Max file size loaded into preview |
-| `vsFzf.preview.wrap` | `false` | Wrap preview text |
+| `searchDeck.search.debounceMs` | `120` | Delay before running search after typing |
+| `searchDeck.search.maxFiles` | `200` | Max file results |
+| `searchDeck.search.maxText` | `200` | Max text results |
+| `searchDeck.search.maxSymbols` | `200` | Max symbol results |
+| `searchDeck.search.exclude` | common build/vendor folders | Glob patterns excluded from search |
+| `searchDeck.preview.maxFileBytes` | `500000` | Max file size loaded into preview |
+| `searchDeck.preview.wrap` | `false` | Wrap preview text |
 
 ## Install From Source
 
@@ -175,7 +175,7 @@ code --extensionDevelopmentPath .
 Inside the new VS Code window:
 
 1. Open Command Palette.
-2. Run `VS FZF: Open Search Tab`.
+2. Run `SearchDeck: Open Search Tab`.
 3. Or press `Alt+Space`.
 
 ## Package Locally
@@ -195,7 +195,7 @@ vsce package
 Install generated `.vsix`:
 
 ```bash
-code --install-extension vs-fzf-0.0.1.vsix
+code --install-extension searchdeck-0.0.1.vsix
 ```
 
 ## Development
@@ -216,7 +216,7 @@ npm run watch
 
 VS Code native Quick Open, text search, and symbol search are overlay UIs. Extensions cannot embed those overlays inside a custom editor tab.
 
-VS FZF uses VS Code APIs and providers for the editor-tab experience, and also exposes wrappers for the native commands when you want the built-in overlays.
+SearchDeck uses VS Code APIs and providers for the editor-tab experience, and also exposes wrappers for the native commands when you want the built-in overlays.
 
 Text search in this version scans workspace files from the extension host because the stable VS Code typings used here do not expose an embeddable `findTextInFiles` API. Result caps and exclude settings keep that bounded.
 

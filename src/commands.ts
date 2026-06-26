@@ -3,42 +3,41 @@ import { SearchPanel } from './panel/SearchPanel';
 
 export function registerCommands(context: vscode.ExtensionContext): vscode.Disposable[] {
   return [
-    vscode.commands.registerCommand('vs-fzf.open', () => {
+    vscode.commands.registerCommand('searchdeck.open', () => {
       SearchPanel.create(context);
     }),
-    vscode.commands.registerCommand('vs-fzf.openNativeQuickOpen', () => {
+    vscode.commands.registerCommand('searchdeck.openNativeQuickOpen', () => {
       return vscode.commands.executeCommand('workbench.action.quickOpen');
     }),
-    vscode.commands.registerCommand('vs-fzf.openNativeTextSearch', () => {
+    vscode.commands.registerCommand('searchdeck.openNativeTextSearch', () => {
       return vscode.commands.executeCommand('workbench.action.quickTextSearch');
     }),
-    vscode.commands.registerCommand('vs-fzf.openNativeSymbols', () => {
+    vscode.commands.registerCommand('searchdeck.openNativeSymbols', () => {
       return vscode.commands.executeCommand('workbench.action.showAllSymbols');
     }),
-    vscode.commands.registerCommand('vs-fzf.focusSearch', () => {
+    vscode.commands.registerCommand('searchdeck.focusSearch', () => {
       SearchPanel.active()?.focusSearch();
     }),
-    vscode.commands.registerCommand('vs-fzf.newSearchTab', () => {
+    vscode.commands.registerCommand('searchdeck.newSearchTab', () => {
       SearchPanel.create(context);
     }),
-    vscode.commands.registerCommand('vs-fzf.closeSearchTab', () => {
+    vscode.commands.registerCommand('searchdeck.closeSearchTab', () => {
       SearchPanel.disposeActive();
     }),
-    vscode.commands.registerCommand('vs-fzf.refresh', () => {
+    vscode.commands.registerCommand('searchdeck.refresh', () => {
       return SearchPanel.active()?.refresh();
     }),
-    vscode.commands.registerCommand('vs-fzf.clear', () => {
+    vscode.commands.registerCommand('searchdeck.clear', () => {
       SearchPanel.active()?.clear();
     }),
-    vscode.commands.registerCommand('vs-fzf.openSelected', () => {
+    vscode.commands.registerCommand('searchdeck.openSelected', () => {
       return SearchPanel.active()?.openSelected(false);
     }),
-    vscode.commands.registerCommand('vs-fzf.openSelectedToSide', () => {
+    vscode.commands.registerCommand('searchdeck.openSelectedToSide', () => {
       return SearchPanel.active()?.openSelected(true);
     }),
-    vscode.commands.registerCommand('vs-fzf.copySelectedReference', () => {
+    vscode.commands.registerCommand('searchdeck.copySelectedReference', () => {
       return SearchPanel.active()?.copySelectedReference();
     })
   ];
 }
-

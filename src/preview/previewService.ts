@@ -8,7 +8,7 @@ export class PreviewService {
       return { content: '', startLine: 0, message: 'No result selected.' };
     }
 
-    const maxBytes = vscode.workspace.getConfiguration('vsFzf').get<number>('preview.maxFileBytes') ?? 500000;
+    const maxBytes = vscode.workspace.getConfiguration('searchDeck').get<number>('preview.maxFileBytes') ?? 500000;
 
     try {
       const stat = await vscode.workspace.fs.stat(result.uri);

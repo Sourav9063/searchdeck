@@ -45,7 +45,7 @@ export class SearchController {
     }
 
     const debounceMs = query.trim()
-      ? vscode.workspace.getConfiguration('vsFzf').get<number>('search.debounceMs') ?? 120
+      ? vscode.workspace.getConfiguration('searchDeck').get<number>('search.debounceMs') ?? 120
       : 0;
     this.debounceTimer = setTimeout(() => {
       void this.runSearch(revision);
@@ -59,7 +59,7 @@ export class SearchController {
     this.session.cancellation = cts;
 
     const query = this.session.query;
-    const config = vscode.workspace.getConfiguration('vsFzf');
+    const config = vscode.workspace.getConfiguration('searchDeck');
     const maxFiles = config.get<number>('search.maxFiles') ?? 200;
     const maxText = config.get<number>('search.maxText') ?? 200;
     const maxSymbols = config.get<number>('search.maxSymbols') ?? 200;

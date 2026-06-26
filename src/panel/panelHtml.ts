@@ -12,14 +12,14 @@ export function getPanelHtml(webview: vscode.Webview, extensionUri: vscode.Uri, 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${cspSource}; script-src 'nonce-${nonce}';">
   <link href="${styleUri}" rel="stylesheet">
-  <title>VS FZF</title>
+  <title>SearchDeck</title>
 </head>
 <body>
   <main class="app">
     <label class="search-label" for="search">Search</label>
     <input id="search" class="search" type="text" autocomplete="off" spellcheck="false" autofocus>
     <section class="content">
-      <div class="results" id="results" role="listbox" aria-label="VS FZF results"></div>
+      <div class="results" id="results" role="listbox" aria-label="SearchDeck results"></div>
       <aside class="preview">
         <div class="preview-header">
           <span id="preview-path"></span>
@@ -33,4 +33,3 @@ export function getPanelHtml(webview: vscode.Webview, extensionUri: vscode.Uri, 
 </body>
 </html>`;
 }
-

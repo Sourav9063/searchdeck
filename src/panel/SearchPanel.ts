@@ -8,7 +8,7 @@ import { getPanelHtml } from './panelHtml';
 import type { ExtensionToWebviewMessage, WebviewToExtensionMessage } from './messageTypes';
 
 export class SearchPanel {
-  static readonly viewType = 'vsFzf.search';
+  static readonly viewType = 'searchDeck.search';
   private static activePanel?: SearchPanel;
   private static readonly panels = new Set<SearchPanel>();
 
@@ -20,7 +20,7 @@ export class SearchPanel {
   static create(context: vscode.ExtensionContext): SearchPanel {
     const panel = vscode.window.createWebviewPanel(
       SearchPanel.viewType,
-      'VS FZF',
+      'SearchDeck',
       vscode.ViewColumn.Active,
       {
         enableScripts: true,
@@ -82,7 +82,7 @@ export class SearchPanel {
       selectedResultId: this.session.selectedResultId,
       sections,
       preview: this.session.preview,
-      wrapPreview: vscode.workspace.getConfiguration('vsFzf').get<boolean>('preview.wrap') ?? false
+      wrapPreview: vscode.workspace.getConfiguration('searchDeck').get<boolean>('preview.wrap') ?? false
     };
 
     void this.panel.webview.postMessage(message);
