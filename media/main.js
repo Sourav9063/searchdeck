@@ -266,10 +266,10 @@
     overlay.textContent = selected.relativePath;
     overlay.title = selected.relativePath;
     overlay.style.left = `${bounds.left}px`;
-    overlay.style.top = `${bounds.top}px`;
-    overlay.style.height = `${bounds.height}px`;
+    overlay.style.top = `${bounds.top - 3}px`;
+    overlay.style.height = `${bounds.height + 6}px`;
     overlay.style.lineHeight = `${bounds.height}px`;
-    overlay.style.backgroundColor = 'var(--vscode-list-focusBackground, var(--vscode-list-hoverBackground))';
+    overlay.style.maxWidth = `${window.innerWidth - bounds.left - 12}px`;
     document.body.appendChild(overlay);
   }
 

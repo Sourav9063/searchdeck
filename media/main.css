@@ -167,8 +167,9 @@ input {
   position: fixed;
   z-index: 100;
   width: max-content;
-  padding-right: 8px;
+  padding: 3px 12px 3px 0;
   color: var(--vscode-list-focusForeground, var(--vscode-editor-foreground));
+  background: var(--vscode-list-focusBackground, var(--vscode-list-hoverBackground));
   white-space: nowrap;
   pointer-events: none;
 }
