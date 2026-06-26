@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { SearchController } from '../search/searchController';
+import { recordRecentFile } from '../search/recentFiles';
 import { serializeResult, type SerializedSection } from '../search/resultTypes';
 import { referencePath } from '../search/workspacePaths';
 import { SearchSession } from '../state/SearchSession';
@@ -125,6 +126,7 @@ export class SearchPanel {
       selection,
       preview: false
     });
+    recordRecentFile(result.uri);
   }
 
   async copySelectedReference(): Promise<void> {

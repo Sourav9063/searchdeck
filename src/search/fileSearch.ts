@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { scorePath, sortResults } from './ranking';
+import { recentFileUris } from './recentFiles';
 import type { FileResult } from './resultTypes';
 import { excludeGlob, workspaceRelativePath } from './workspacePaths';
 
@@ -14,10 +15,13 @@ export class FileSearch {
     }
 
     const trimmed = query.trim();
-    const results = files
+    const recent = trimmed ? [] : recentFileUris();
+    const recentRank = new Map(recent.map((uri, index) => [uri.toString(), recent.length - index + 1000]));
+    const candidates = uniqueUris([...recent, ...files]);
+    const results = candidates
       .map((uri) => {
         const relativePath = workspaceRelativePath(uri);
-        const score = trimmed ? scorePath(trimmed, relativePath) : 1;
+        const score = trimmed ? scorePath(trimmed, relativePath) : recentRank.get(uri.toString()) ?? 1;
         return {
           id: `file:${uri.toString()}`,
           section: 'files' as const,
@@ -55,3 +59,15 @@ function basename(value: string): string {
   return normalized.slice(normalized.lastIndexOf('/') + 1);
 }
 
+function uniqueUris(uris: vscode.Uri[]): vscode.Uri[] {
+  const seen = new Set<string>();
+  return uris.filter((uri) => {
+    const key = uri.toString();
+    if (seen.has(key)) {
+      return false;
+    }
+
+    seen.add(key);
+    return true;
+  });
+}
