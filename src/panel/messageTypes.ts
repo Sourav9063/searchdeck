@@ -6,6 +6,7 @@ export type WebviewToExtensionMessage =
   | { type: 'select'; resultId: string }
   | { type: 'open'; side?: boolean }
   | { type: 'copyReference' }
+  | { type: 'switchEditor'; direction: 'previous' | 'next' }
   | { type: 'refresh' }
   | { type: 'clear' }
   | { type: 'close' }
@@ -24,4 +25,3 @@ export type ExtensionToWebviewMessage =
   | ExtensionToWebviewState
   | { type: 'focusSearch' }
   | { type: 'command'; command: 'open' | 'openSide' | 'copyReference' | 'clear' | 'refresh' | 'close' | 'newTab' };
-
