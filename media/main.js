@@ -275,7 +275,10 @@
     }
 
     const selected = resultsRoot.querySelector('.result-row.selected');
-    selected?.scrollIntoView({ block: 'nearest' });
+    const sectionBody = selected?.closest('.section-body');
+    if (selected && sectionBody) {
+      scrollWithin(sectionBody, selected, 'nearest');
+    }
     renderSelectedPathOverlay();
   }
 
@@ -338,7 +341,26 @@
     const selected = selectedResult();
     if (selected?.section === 'text' || selected?.section === 'symbols') {
       const highlighted = previewContent.querySelector('.preview-line.highlight');
-      requestAnimationFrame(() => highlighted?.scrollIntoView({ block: 'center', inline: 'nearest' }));
+      if (highlighted) {
+        requestAnimationFrame(() => scrollWithin(previewContent, highlighted, 'center'));
+      }
+    }
+  }
+
+  function scrollWithin(container, element, alignment) {
+    const containerBounds = container.getBoundingClientRect();
+    const elementBounds = element.getBoundingClientRect();
+
+    if (alignment === 'center') {
+      container.scrollTop += elementBounds.top - containerBounds.top
+        - (container.clientHeight - elementBounds.height) / 2;
+      return;
+    }
+
+    if (elementBounds.top < containerBounds.top) {
+      container.scrollTop -= containerBounds.top - elementBounds.top;
+    } else if (elementBounds.bottom > containerBounds.bottom) {
+      container.scrollTop += elementBounds.bottom - containerBounds.bottom;
     }
   }
 
