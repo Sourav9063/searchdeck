@@ -255,7 +255,8 @@
 
         const detail = document.createElement('span');
         detail.className = 'result-detail';
-        detail.textContent = result.previewText || result.description;
+        detail.textContent = result.id === state.selectedResultId ? result.relativePath : result.previewText || result.description;
+        detail.title = result.relativePath;
 
         const marker = document.createElement('span');
         marker.className = 'selection-marker';

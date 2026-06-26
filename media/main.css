@@ -105,6 +105,7 @@ input {
 }
 
 .result-row {
+  position: relative;
   display: grid;
   grid-template-columns: 18px minmax(80px, 34%) minmax(0, 1fr);
   width: 100%;
@@ -157,7 +158,13 @@ input {
 }
 
 .result-row.selected .result-detail {
+  position: relative;
+  z-index: 2;
+  overflow: visible;
+  padding-right: 8px;
+  background: var(--vscode-list-focusBackground, var(--vscode-list-hoverBackground));
   color: inherit;
+  white-space: nowrap;
 }
 
 .preview {
