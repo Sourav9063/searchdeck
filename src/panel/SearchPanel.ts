@@ -62,6 +62,7 @@ export class SearchPanel {
       this.panel.onDidChangeViewState(() => {
         if (this.panel.active) {
           SearchPanel.activePanel = this;
+          this.focusSearch();
         }
       }),
       this.panel.webview.onDidReceiveMessage((message: WebviewToExtensionMessage) => {
