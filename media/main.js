@@ -191,7 +191,7 @@
     resultsRoot.replaceChildren();
     resultsRoot.classList.toggle('query-active', Boolean(state.query.trim()));
 
-    for (const section of state.sections) {
+    for (const section of state.sections.filter((candidate) => candidate.results.length > 0)) {
       const sectionElement = document.createElement('section');
       sectionElement.className = 'result-section';
       sectionElement.dataset.section = section.id;
@@ -205,13 +205,6 @@
 
       const body = document.createElement('div');
       body.className = 'section-body';
-
-      if (section.results.length === 0) {
-        const empty = document.createElement('div');
-        empty.className = 'empty';
-        empty.textContent = 'No results';
-        body.appendChild(empty);
-      }
 
       for (const result of section.results) {
         const row = document.createElement('button');
