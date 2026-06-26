@@ -15,6 +15,8 @@ export class SearchController {
   private readonly files = new FileSearch();
   private readonly previewService = new PreviewService();
   private debounceTimer?: ReturnType<typeof setTimeout>;
+  private searchRevision = 0;
+  private selectionRevision = 0;
 
   constructor(
     private readonly session: SearchSession,
@@ -29,9 +31,12 @@ export class SearchController {
   }
 
   scheduleSearch(query: string): void {
+    const revision = this.searchRevision + 1;
+    this.searchRevision = revision;
     const queryChanged = query !== this.session.query;
     this.session.query = query;
     if (queryChanged) {
+      this.selectionRevision += 1;
       this.session.selectedResultId = undefined;
       this.session.focusedSection = 'files';
     }
@@ -40,13 +45,16 @@ export class SearchController {
       clearTimeout(this.debounceTimer);
     }
 
-    const debounceMs = vscode.workspace.getConfiguration('vsFzf').get<number>('search.debounceMs') ?? 120;
+    const debounceMs = query.trim()
+      ? vscode.workspace.getConfiguration('vsFzf').get<number>('search.debounceMs') ?? 120
+      : 0;
     this.debounceTimer = setTimeout(() => {
-      void this.runSearch();
+      void this.runSearch(revision);
     }, debounceMs);
   }
 
-  async runSearch(): Promise<void> {
+  async runSearch(revision = this.searchRevision + 1): Promise<void> {
+    this.searchRevision = revision;
     this.session.disposeSearch();
     const cts = new vscode.CancellationTokenSource();
     this.session.cancellation = cts;
@@ -64,10 +72,17 @@ export class SearchController {
     };
 
     grouped.files = await this.files.search(query, maxFiles, cts.token);
-    this.applySections(query, grouped);
+    if (!this.applySections(revision, query, grouped)) {
+      return;
+    }
 
     if (!query.trim() || cts.token.isCancellationRequested) {
-      this.session.preview = await this.previewService.preview(this.session.getSelectedResult());
+      const preview = await this.previewService.preview(this.session.getSelectedResult());
+      if (!this.isCurrentSearch(revision, query)) {
+        return;
+      }
+
+      this.session.preview = preview;
       this.sink.postState();
       return;
     }
@@ -75,28 +90,31 @@ export class SearchController {
     const symbolPromise = searchSymbols(query, maxSymbols, cts.token)
       .then((symbols) => {
         grouped.symbols = symbols;
-        this.applySections(query, grouped);
+        this.applySections(revision, query, grouped);
       })
       .catch(() => {
         grouped.symbols = [];
-        this.applySections(query, grouped);
+        this.applySections(revision, query, grouped);
       });
 
     const textPromise = searchText(query, maxText, cts.token)
       .then((text) => {
         grouped.text = text;
-        this.applySections(query, grouped);
+        this.applySections(revision, query, grouped);
       })
       .catch(() => {
         grouped.text = [];
-        this.applySections(query, grouped);
+        this.applySections(revision, query, grouped);
       });
 
     await Promise.allSettled([symbolPromise, textPromise]);
 
-    if (!cts.token.isCancellationRequested) {
-      this.session.preview = await this.previewService.preview(this.session.getSelectedResult());
-      this.sink.postState();
+    if (this.isCurrentSearch(revision, query)) {
+      const preview = await this.previewService.preview(this.session.getSelectedResult());
+      if (this.isCurrentSearch(revision, query)) {
+        this.session.preview = preview;
+        this.sink.postState();
+      }
     }
   }
 
@@ -112,19 +130,35 @@ export class SearchController {
   }
 
   async select(resultId: string): Promise<void> {
+    const revision = this.selectionRevision + 1;
+    this.selectionRevision = revision;
     this.session.selectedResultId = resultId;
     const result = this.session.getSelectedResult();
     if (result) {
       this.session.focusedSection = result.section;
     }
 
-    this.session.preview = await this.previewService.preview(result);
+    const preview = await this.previewService.preview(result);
+    if (revision !== this.selectionRevision) {
+      return;
+    }
+
+    this.session.preview = preview;
     this.sink.postState();
   }
 
-  private applySections(query: string, grouped: Record<SectionId, SearchResult[]>): void {
+  private applySections(revision: number, query: string, grouped: Record<SectionId, SearchResult[]>): boolean {
+    if (!this.isCurrentSearch(revision, query)) {
+      return false;
+    }
+
     this.session.sections = buildSections(query, grouped);
     this.session.keepValidSelection();
     this.sink.postState();
+    return true;
+  }
+
+  private isCurrentSearch(revision: number, query: string): boolean {
+    return revision === this.searchRevision && query === this.session.query;
   }
 }

@@ -16,12 +16,16 @@
   };
 
   let suppressInput = false;
+  let pendingQuery;
+  let pendingSelectedResultId;
 
   search.addEventListener('input', () => {
     if (suppressInput) {
       return;
     }
 
+    pendingQuery = search.value;
+    pendingSelectedResultId = undefined;
     vscode.postMessage({ type: 'query', query: search.value });
   });
 
@@ -143,6 +147,22 @@
 
     if (message.type === 'state') {
       state = message;
+      if (pendingQuery !== undefined) {
+        if (state.query === pendingQuery) {
+          pendingQuery = undefined;
+        } else {
+          state.query = pendingQuery;
+        }
+      }
+
+      if (pendingSelectedResultId) {
+        if (state.selectedResultId === pendingSelectedResultId) {
+          pendingSelectedResultId = undefined;
+        } else if (findResult(pendingSelectedResultId)) {
+          state.selectedResultId = pendingSelectedResultId;
+        }
+      }
+
       render();
       return;
     }
@@ -177,7 +197,7 @@
   }
 
   function render() {
-    if (search.value !== state.query) {
+    if (pendingQuery === undefined && search.value !== state.query) {
       suppressInput = true;
       search.value = state.query;
       suppressInput = false;
@@ -189,7 +209,7 @@
 
   function renderResults() {
     resultsRoot.replaceChildren();
-    resultsRoot.classList.toggle('query-active', Boolean(state.query.trim()));
+    resultsRoot.classList.toggle('query-active', Boolean(currentQuery().trim()));
 
     for (const section of state.sections.filter((candidate) => candidate.results.length > 0)) {
       const sectionElement = document.createElement('section');
@@ -227,8 +247,8 @@
 
         const marker = document.createElement('span');
         marker.className = 'selection-marker';
-        marker.textContent = result.id === state.selectedResultId && state.query.trim() ? '>' : '';
-        marker.title = result.id === state.selectedResultId && state.query.trim() ? 'Previewing this result' : '';
+        marker.textContent = result.id === state.selectedResultId && currentQuery().trim() ? '>' : '';
+        marker.title = result.id === state.selectedResultId && currentQuery().trim() ? 'Previewing this result' : '';
 
         row.append(marker, title, detail);
         row.addEventListener('click', () => selectResult(result.id));
@@ -289,7 +309,7 @@
     const matchStart = typeof preview?.highlightStartCharacter === 'number' ? preview.highlightStartCharacter : -1;
     const matchEnd = typeof preview?.highlightEndCharacter === 'number' && preview.highlightEndCharacter > matchStart
       ? preview.highlightEndCharacter
-      : matchStart >= 0 ? matchStart + Math.max(1, state.query.length) : -1;
+      : matchStart >= 0 ? matchStart + Math.max(1, currentQuery().length) : -1;
     const tokens = tokenizeLine(line, languageId);
 
     for (const token of tokens) {
@@ -376,10 +396,13 @@
 
   function setQuery(query) {
     search.value = query;
+    pendingQuery = query;
+    pendingSelectedResultId = undefined;
     vscode.postMessage({ type: 'query', query });
   }
 
   function selectResult(resultId) {
+    pendingSelectedResultId = resultId;
     state.selectedResultId = resultId;
     renderResults();
     vscode.postMessage({ type: 'select', resultId });
@@ -423,7 +446,15 @@
   }
 
   function selectedResult() {
-    return flattenedResults().find((result) => result.id === state.selectedResultId);
+    return findResult(state.selectedResultId);
+  }
+
+  function findResult(resultId) {
+    return flattenedResults().find((result) => result.id === resultId);
+  }
+
+  function currentQuery() {
+    return pendingQuery === undefined ? state.query : pendingQuery;
   }
 
   function keyMatches(event, key) {
