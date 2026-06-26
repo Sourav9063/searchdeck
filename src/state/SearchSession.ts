@@ -42,11 +42,14 @@ export class SearchSession {
   }
 
   keepValidSelection(): void {
-    if (this.getSelectedResult()) {
+    const selected = this.selectedResultId
+      ? this.sections.some((section) => section.results.some((result) => result.id === this.selectedResultId))
+      : false;
+
+    if (selected) {
       return;
     }
 
     this.selectedResultId = this.firstResult()?.id;
   }
 }
-

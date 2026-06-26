@@ -1,4 +1,3 @@
-import * as fs from 'fs/promises';
 import * as vscode from 'vscode';
 import type { PreviewModel, SearchResult } from '../search/resultTypes';
 
@@ -11,7 +10,7 @@ export class PreviewService {
     const maxBytes = vscode.workspace.getConfiguration('vsFzf').get<number>('preview.maxFileBytes') ?? 500000;
 
     try {
-      const stat = await fs.stat(result.uri.fsPath);
+      const stat = await vscode.workspace.fs.stat(result.uri);
       if (stat.size > maxBytes) {
         return {
           uri: result.uri.toString(),

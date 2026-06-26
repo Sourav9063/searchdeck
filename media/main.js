@@ -189,6 +189,7 @@
 
   function renderResults() {
     resultsRoot.replaceChildren();
+    resultsRoot.classList.toggle('query-active', Boolean(state.query.trim()));
 
     for (const section of state.sections) {
       const sectionElement = document.createElement('section');
@@ -233,6 +234,8 @@
 
         const marker = document.createElement('span');
         marker.className = 'selection-marker';
+        marker.textContent = result.id === state.selectedResultId && state.query.trim() ? '>' : '';
+        marker.title = result.id === state.selectedResultId && state.query.trim() ? 'Previewing this result' : '';
 
         row.append(marker, title, detail);
         row.addEventListener('click', () => selectResult(result.id));
@@ -280,6 +283,12 @@
 
       line.append(gutter, text);
       previewContent.appendChild(line);
+    }
+
+    const selected = selectedResult();
+    if (selected?.section === 'text' || selected?.section === 'symbols') {
+      const highlighted = previewContent.querySelector('.preview-line.highlight');
+      requestAnimationFrame(() => highlighted?.scrollIntoView({ block: 'center', inline: 'nearest' }));
     }
   }
 
@@ -418,6 +427,10 @@
 
   function flattenedResults() {
     return state.sections.flatMap((section) => section.results);
+  }
+
+  function selectedResult() {
+    return flattenedResults().find((result) => result.id === state.selectedResultId);
   }
 
   function keyMatches(event, key) {

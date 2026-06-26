@@ -14,7 +14,7 @@ export interface SearchUpdateSink {
 export class SearchController {
   private readonly files = new FileSearch();
   private readonly previewService = new PreviewService();
-  private debounceTimer?: NodeJS.Timeout;
+  private debounceTimer?: ReturnType<typeof setTimeout>;
 
   constructor(
     private readonly session: SearchSession,
@@ -29,7 +29,13 @@ export class SearchController {
   }
 
   scheduleSearch(query: string): void {
+    const queryChanged = query !== this.session.query;
     this.session.query = query;
+    if (queryChanged) {
+      this.session.selectedResultId = undefined;
+      this.session.focusedSection = 'files';
+    }
+
     if (this.debounceTimer) {
       clearTimeout(this.debounceTimer);
     }
@@ -122,4 +128,3 @@ export class SearchController {
     this.sink.postState();
   }
 }
-

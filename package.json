@@ -31,6 +31,7 @@
     "onCommand:vs-fzf.copySelectedReference"
   ],
   "main": "./out/extension.js",
+  "browser": "./out/extension.js",
   "scripts": {
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",

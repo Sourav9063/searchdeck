@@ -132,9 +132,17 @@ input {
 }
 
 .selection-marker {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  height: 1px;
+  min-height: 18px;
+  color: transparent;
+  font-weight: 700;
+}
+
+.results.query-active .result-row.selected .selection-marker {
+  color: var(--vscode-focusBorder);
 }
 
 .result-title,
