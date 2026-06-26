@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { scorePath, sortResults } from './ranking';
+import { filterGitIgnoredUris, resetGitIgnoreCache } from './gitIgnore';
 import { recentFileUris } from './recentFiles';
 import type { FileResult } from './resultTypes';
 import { excludeGlob, workspaceRelativePath } from './workspacePaths';
@@ -17,7 +18,7 @@ export class FileSearch {
     const trimmed = query.trim();
     const recent = trimmed ? [] : recentFileUris();
     const recentRank = new Map(recent.map((uri, index) => [uri.toString(), recent.length - index + 1000]));
-    const candidates = uniqueUris([...recent, ...files]);
+    const candidates = await filterGitIgnoredUris(uniqueUris([...recent, ...files]), token);
     const results = candidates
       .map((uri) => {
         const relativePath = workspaceRelativePath(uri);
@@ -39,6 +40,7 @@ export class FileSearch {
 
   async refresh(token?: vscode.CancellationToken): Promise<void> {
     this.cacheReady = false;
+    resetGitIgnoreCache();
     await this.getFiles(5000, token);
   }
 

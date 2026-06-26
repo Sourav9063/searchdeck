@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { fuzzyScore, sortResults } from './ranking';
+import { filterGitIgnored } from './gitIgnore';
 import type { SymbolResult } from './resultTypes';
 import { workspaceRelativePath } from './workspacePaths';
 
@@ -41,6 +42,5 @@ export async function searchSymbols(query: string, maxResults: number, token: vs
     };
   });
 
-  return sortResults(results).slice(0, maxResults);
+  return sortResults(await filterGitIgnored(results, token)).slice(0, maxResults);
 }
-

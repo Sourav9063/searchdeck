@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { fuzzyScore, sortResults } from './ranking';
+import { filterGitIgnoredUris } from './gitIgnore';
 import type { TextResult } from './resultTypes';
 import { excludeGlob, workspaceRelativePath } from './workspacePaths';
 
@@ -10,7 +11,10 @@ export async function searchText(query: string, maxResults: number, token: vscod
   }
 
   const results: TextResult[] = [];
-  const files = await vscode.workspace.findFiles('**/*', excludeGlob(), Math.max(maxResults * 12, 1000), token);
+  const files = await filterGitIgnoredUris(
+    await vscode.workspace.findFiles('**/*', excludeGlob(), Math.max(maxResults * 12, 1000), token),
+    token
+  );
   const needle = trimmed.toLowerCase();
 
   for (const uri of files) {
