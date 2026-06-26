@@ -162,7 +162,11 @@ export class SearchPanel {
         await this.copySelectedReference();
         break;
       case 'switchEditor':
-        await vscode.commands.executeCommand(message.direction === 'previous' ? 'workbench.action.previousEditor' : 'workbench.action.nextEditor');
+        await vscode.commands.executeCommand(
+          message.direction === 'previous'
+            ? 'workbench.action.openPreviousRecentlyUsedEditor'
+            : 'workbench.action.openNextRecentlyUsedEditor'
+        );
         break;
       case 'refresh':
         await this.refresh();
