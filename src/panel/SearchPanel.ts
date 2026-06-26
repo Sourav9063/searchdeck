@@ -133,8 +133,7 @@ export class SearchPanel {
       return;
     }
 
-    const line = result.section === 'files' ? undefined : result.line;
-    await vscode.env.clipboard.writeText(referencePath(result.uri, line));
+    await vscode.env.clipboard.writeText(referencePath(result.uri));
   }
 
   private async handleMessage(message: WebviewToExtensionMessage): Promise<void> {
@@ -196,4 +195,3 @@ function nonce(): string {
 
   return text;
 }
-
