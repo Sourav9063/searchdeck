@@ -13,7 +13,7 @@ VS Code already has great Quick Open, text search, and symbol search. SearchDeck
 - Search files, text, and symbols from one input.
 - Preview selected files without leaving the search tab.
 - Jump with fast Telescope-like keys.
-- Send exact files and lines to coding agents by copying references like `@src/abc.js:42` with one shortcut.
+- Send exact files to coding agents by copying references like `@src/abc.js` with one shortcut.
 - Use VS Code native commands when you want the built-in overlays.
 
 ## What It Looks Like
@@ -84,7 +84,7 @@ SearchDeck turns any selected result into a precise reference for agent programm
 ```
 
 - File results copy the project-relative `@path`.
-- Text and symbol results include the exact line number.
+- Text and symbol results copy the file path without a line number.
 - No manual path typing, file browsing, or ambiguous filenames.
 - Copy several references to build focused multi-file prompts quickly.
 

@@ -129,7 +129,7 @@ export class SearchPanel {
       return;
     }
 
-    const reference = referencePath(result.uri, result.section === 'files' ? undefined : result.line);
+    const reference = referencePath(result.uri);
     await vscode.env.clipboard.writeText(reference);
     vscode.window.setStatusBarMessage(`$(check) Copied reference: ${reference}`, 3000);
   }
