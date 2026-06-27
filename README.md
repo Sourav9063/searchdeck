@@ -6,7 +6,7 @@ SearchDeck opens inside the editor area as a real tab. Search results stay where
 
 [Demo Video](https://github.com/Sourav9063/searchdeck/raw/refs/heads/main/assets/SearchDeck__The_Workflow_Evolution.mp4)
 
-<video controls muted>
+<video controls>
   <source src="https://github.com/Sourav9063/searchdeck/raw/refs/heads/main/assets/SearchDeck__The_Workflow_Evolution.mp4" type="video/mp4"/>
 </video>
 
