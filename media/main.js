@@ -75,13 +75,11 @@
 
     if (event.altKey && !event.shiftKey && keyMatches(event, 'h')) {
       event.preventDefault();
-      vscode.postMessage({ type: 'switchEditor', direction: 'previous' });
       return;
     }
 
     if (event.altKey && !event.shiftKey && keyMatches(event, 'l')) {
       event.preventDefault();
-      vscode.postMessage({ type: 'switchEditor', direction: 'next' });
       return;
     }
 
