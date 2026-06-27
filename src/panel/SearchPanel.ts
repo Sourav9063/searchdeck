@@ -60,7 +60,7 @@ export class SearchPanel {
       this.panel.onDidChangeViewState(() => {
         if (this.panel.active) {
           SearchPanel.activePanel = this;
-          this.focusSearch();
+          this.postFocusSearch();
         }
       }),
       this.panel.webview.onDidReceiveMessage((message: WebviewToExtensionMessage) => {
@@ -90,6 +90,10 @@ export class SearchPanel {
 
   focusSearch(): void {
     this.panel.reveal();
+    this.postFocusSearch();
+  }
+
+  private postFocusSearch(): void {
     void this.panel.webview.postMessage({ type: 'focusSearch' } satisfies ExtensionToWebviewMessage);
   }
 
@@ -155,13 +159,6 @@ export class SearchPanel {
         break;
       case 'copyReference':
         await this.copySelectedReference();
-        break;
-      case 'switchEditor':
-        await vscode.commands.executeCommand(
-          message.direction === 'previous'
-            ? 'workbench.action.openPreviousRecentlyUsedEditor'
-            : 'workbench.action.openNextRecentlyUsedEditor'
-        );
         break;
       case 'refresh':
         await this.refresh();
