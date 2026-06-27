@@ -4,12 +4,11 @@ Telescope-style search for VS Code with agent-ready `@path` references.
 
 SearchDeck opens inside the editor area as a real tab. Search results stay where you left them, previews stay visible, and multiple searches can remain open while you keep working.
 
+[Demo Video](https://github.com/Sourav9063/searchdeck/raw/refs/heads/main/assets/SearchDeck__The_Workflow_Evolution.mp4)
 
-https://github.com/user-attachments/assets/396cf7db-3292-42f9-86a6-3ef60e337cb3
-
-
-
-
+<video controls muted>
+  <source src="https://github.com/Sourav9063/searchdeck/raw/refs/heads/main/assets/SearchDeck__The_Workflow_Evolution.mp4" type="video/mp4"/>
+</video>
 
 ## Why Install
 

@@ -3,6 +3,7 @@
 .gitignore
 AGENTS.md
 agents/**
+assets/**
 src/**
 node_modules/**
 out/**
