@@ -2,7 +2,7 @@
   "name": "searchdeck",
   "displayName": "SearchDeck",
   "description": "Persistent, keyboard-first fuzzy file, text, and symbol search in VS Code editor tabs, inspired by Telescope.",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "publisher": "souravahmed",
   "author": {
     "name": "Sourav Ahmed"
@@ -132,24 +132,6 @@
         "command": "searchdeck.openNativeSymbols",
         "key": "alt+o",
         "mac": "alt+o"
-      },
-      {
-        "command": "searchdeck.newSearchTab",
-        "key": "alt+n",
-        "mac": "alt+n",
-        "when": "webviewId == 'searchDeck.search'"
-      },
-      {
-        "command": "searchdeck.closeSearchTab",
-        "key": "alt+w",
-        "mac": "alt+w",
-        "when": "webviewId == 'searchDeck.search'"
-      },
-      {
-        "command": "searchdeck.refresh",
-        "key": "alt+r",
-        "mac": "alt+r",
-        "when": "webviewId == 'searchDeck.search'"
       },
       {
         "command": "searchdeck.clear",

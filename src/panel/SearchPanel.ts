@@ -172,9 +172,6 @@ export class SearchPanel {
       case 'close':
         this.panel.dispose();
         break;
-      case 'newTab':
-        SearchPanel.create(this.context);
-        break;
     }
   }
 

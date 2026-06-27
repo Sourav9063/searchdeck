@@ -186,7 +186,6 @@ Global:
 
 When SearchDeck webview focused:
 
-- `Alt+N` -> new SearchDeck search tab
 - `Alt+W` -> close current SearchDeck search tab
 - `Alt+R` -> refresh results
 - `Alt+Backspace` -> clear query

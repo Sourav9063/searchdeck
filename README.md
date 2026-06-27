@@ -132,7 +132,6 @@ All commands are contributed to VS Code, so users can change them in Keyboard Sh
 | `Alt+T` | Jump to Text |
 | `Alt+S` | Jump to Symbols |
 | `Tab` / `Shift+Tab` | Cycle sections |
-| `Alt+N` | New SearchDeck tab |
 | `Alt+W` | Close current SearchDeck tab |
 | `Alt+R` | Refresh results |
 | `Alt+Backspace` | Clear query |

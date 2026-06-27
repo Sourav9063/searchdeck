@@ -61,12 +61,6 @@
       return;
     }
 
-    if (event.altKey && keyMatches(event, 'n')) {
-      event.preventDefault();
-      vscode.postMessage({ type: 'newTab' });
-      return;
-    }
-
     if (event.altKey && keyMatches(event, 'w')) {
       event.preventDefault();
       vscode.postMessage({ type: 'close' });

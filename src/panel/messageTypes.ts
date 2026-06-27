@@ -9,8 +9,7 @@ export type WebviewToExtensionMessage =
   | { type: 'switchEditor'; direction: 'previous' | 'next' }
   | { type: 'refresh' }
   | { type: 'clear' }
-  | { type: 'close' }
-  | { type: 'newTab' };
+  | { type: 'close' };
 
 export interface ExtensionToWebviewState {
   type: 'state';
