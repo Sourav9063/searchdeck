@@ -51,7 +51,7 @@ export async function searchSymbols(query: string, maxResults: number, token: vs
       descriptionMatchPositions: fuzzyScore(trimmed, description).positions,
       relativePathMatchPositions: fuzzyScore(trimmed, relativePath).positions
     };
-  });
+  }).filter((result) => result.score > 0);
 
   return sortResults(await filterGitIgnored(results, token)).slice(0, maxResults);
 }

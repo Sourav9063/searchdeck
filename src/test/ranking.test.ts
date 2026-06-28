@@ -10,6 +10,10 @@ test('fuzzyScore rewards contiguous substring matches', () => {
   assert.ok(contiguous > sparse);
 });
 
+test('fuzzyScore rejects values that do not match the complete query', () => {
+  assert.equal(fuzzyScore('create table if', 'CreateUserInput').score, 0);
+});
+
 test('scorePath rewards basename matches', () => {
   const basenameMatch = scorePath('panel', 'src/panel/SearchPanel.ts');
   const pathOnlyMatch = scorePath('panel', 'panel-archive/src/SearchView.ts');
