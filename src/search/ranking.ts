@@ -118,12 +118,25 @@ export function buildSections(query: string, results: Record<SectionId, SearchRe
   });
 }
 
-export function sectionScore(results: SearchResult[]): number {
-  if (results.length === 0) {
-    return 0;
+export function promoteSelectedSection(sections: ResultSection[], selectedResultId: string | undefined): ResultSection[] {
+  if (!selectedResultId) {
+    return sections;
   }
 
-  const topScore = results[0]?.score ?? 0;
-  const densityBonus = Math.min(30, results.length * 3);
-  return topScore + densityBonus;
+  const selectedSectionIndex = sections.findIndex((section) =>
+    section.results.some((result) => result.id === selectedResultId)
+  );
+  if (selectedSectionIndex <= 0) {
+    return sections;
+  }
+
+  return [
+    sections[selectedSectionIndex],
+    ...sections.slice(0, selectedSectionIndex),
+    ...sections.slice(selectedSectionIndex + 1)
+  ];
+}
+
+export function sectionScore(results: SearchResult[]): number {
+  return results[0]?.score ?? 0;
 }

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { PreviewService } from '../preview/previewService';
 import { SearchSession } from '../state/SearchSession';
 import { FileSearch } from './fileSearch';
-import { buildSections } from './ranking';
+import { buildSections, promoteSelectedSection } from './ranking';
 import type { SearchResult, SectionId } from './resultTypes';
 import { searchSymbols } from './symbolSearch';
 import { searchText } from './textSearch';
@@ -17,6 +17,7 @@ export class SearchController {
   private debounceTimer?: ReturnType<typeof setTimeout>;
   private searchRevision = 0;
   private selectionRevision = 0;
+  private selectionIsManual = false;
 
   constructor(
     private readonly session: SearchSession,
@@ -38,6 +39,7 @@ export class SearchController {
     if (queryChanged) {
       this.selectionRevision += 1;
       this.session.selectedResultId = undefined;
+      this.selectionIsManual = false;
     }
 
     if (this.debounceTimer) {
@@ -133,6 +135,7 @@ export class SearchController {
     const revision = this.selectionRevision + 1;
     this.selectionRevision = revision;
     this.session.selectedResultId = resultId;
+    this.selectionIsManual = true;
     const result = this.session.getSelectedResult();
     const preview = await this.previewService.preview(result);
     if (revision !== this.selectionRevision) {
@@ -150,6 +153,9 @@ export class SearchController {
 
     this.session.sections = buildSections(query, grouped);
     this.session.keepValidSelection();
+    if (!this.selectionIsManual) {
+      this.session.sections = promoteSelectedSection(this.session.sections, this.session.selectedResultId);
+    }
     this.sink.postState();
     return true;
   }

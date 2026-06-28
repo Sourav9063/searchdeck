@@ -51,7 +51,9 @@ export async function searchText(
 
       const range = new vscode.Range(line, character, line, character + trimmed.length);
       const previewText = text.trim();
-      const score = fuzzyScore(trimmed, previewText).score + fuzzyScore(trimmed, relativePath).score;
+      const textScore = fuzzyScore(trimmed, previewText).score;
+      const pathScore = fuzzyScore(trimmed, relativePath).score;
+      const score = Math.max(textScore, Math.floor(pathScore / 3));
 
       results.push({
         id: `text:${uri.toString()}:${line}:${character}:${results.length}`,

@@ -40,7 +40,7 @@ export async function searchSymbols(query: string, maxResults: number, token: vs
       description,
       uri: symbol.location.uri,
       relativePath,
-      score: nameScore + Math.floor(containerScore / 2) + Math.floor(pathScore / 3),
+      score: Math.max(nameScore, Math.floor(containerScore / 2), Math.floor(pathScore / 3)),
       line: symbol.location.range.start.line,
       character: symbol.location.range.start.character,
       range: symbol.location.range,

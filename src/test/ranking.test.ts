@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { buildSections, fuzzyScore, scorePath } from '../search/ranking';
+import { buildSections, fuzzyScore, promoteSelectedSection, scorePath } from '../search/ranking';
 import type { SearchResult } from '../search/resultTypes';
 
 test('fuzzyScore rewards contiguous substring matches', () => {
@@ -33,6 +33,16 @@ test('buildSections reorders sections by strongest result category', () => {
   assert.equal(sections[2]?.id, 'files');
 });
 
+test('buildSections does not let many weaker matches outrank the strongest match', () => {
+  const sections = buildSections('needle', {
+    files: [result('files', 'needle.ts', 100)],
+    text: Array.from({ length: 20 }, (_, index) => result('text', `text-${index}.ts:1`, 90)),
+    symbols: []
+  });
+
+  assert.equal(sections[0]?.id, 'files');
+});
+
 test('buildSections keeps default order for empty query', () => {
   const sections = buildSections('', {
     files: [],
@@ -41,6 +51,28 @@ test('buildSections keeps default order for empty query', () => {
   });
 
   assert.deepEqual(sections.map((section) => section.id), ['files', 'text', 'symbols']);
+});
+
+test('promoteSelectedSection moves the automatically selected result section first', () => {
+  const sections = buildSections('needle', {
+    files: [result('files', 'needle.ts', 50)],
+    text: [result('text', 'needle.ts:1', 80)],
+    symbols: [result('symbols', 'NeedleSymbol', 100)]
+  });
+
+  const promoted = promoteSelectedSection(sections, 'files:needle.ts');
+
+  assert.deepEqual(promoted.map((section) => section.id), ['files', 'symbols', 'text']);
+});
+
+test('promoteSelectedSection keeps relevance order without a selected result', () => {
+  const sections = buildSections('needle', {
+    files: [result('files', 'needle.ts', 50)],
+    text: [result('text', 'needle.ts:1', 80)],
+    symbols: [result('symbols', 'NeedleSymbol', 100)]
+  });
+
+  assert.strictEqual(promoteSelectedSection(sections, undefined), sections);
 });
 
 function result(section: SearchResult['section'], label: string, score: number): SearchResult {
