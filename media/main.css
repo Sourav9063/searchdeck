@@ -249,7 +249,7 @@ input {
 }
 
 .preview-line.highlight {
-  background: var(--vscode-editor-lineHighlightBackground);
+  background: color-mix(in srgb, var(--vscode-focusBorder) 20%, var(--vscode-editor-background));
   box-shadow: inset 3px 0 0 var(--vscode-focusBorder);
 }
 
