@@ -29,13 +29,13 @@
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' && event.altKey) {
       event.preventDefault();
-      vscode.postMessage({ type: 'open', side: true });
+      vscode.postMessage({ type: 'copyReference' });
       return;
     }
 
     if (event.key === 'Enter' && event.shiftKey) {
       event.preventDefault();
-      vscode.postMessage({ type: 'copyReference' });
+      vscode.postMessage({ type: 'open', side: true });
       return;
     }
 

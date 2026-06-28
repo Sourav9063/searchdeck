@@ -121,7 +121,7 @@ Preview should not dirty editor state. It remains read-only inside webview.
 - Text: open file at match location.
 - Symbol: open file at symbol location.
 
-`Shift+Enter` copies selected result project-relative path to clipboard with `@` prefix.
+`Alt+Enter` copies selected result project-relative path to clipboard with `@` prefix.
 
 - File result example: `@src/abc.js`
 - Text result example: `@src/abc.js`
@@ -189,12 +189,12 @@ When SearchDeck webview focused:
 - `Alt+W` -> close current SearchDeck search tab
 - `Alt+R` -> refresh results
 - `Alt+Backspace` -> clear query
-- `Alt+Enter` -> open selected result to side
+- `Shift+Enter` -> open selected result to side
 
 Inside webview DOM:
 
 - `Enter` -> open selected result
-- `Shift+Enter` -> copy selected result reference, e.g. `@src/abc.js`
+- `Alt+Enter` -> copy selected result reference, e.g. `@src/abc.js`
 - `Escape` -> clear query if query exists, otherwise close tab
 - `Alt+J` / `ArrowDown` / `Ctrl+N` -> next result
 - `Alt+K` / `ArrowUp` / `Ctrl+P` -> previous result

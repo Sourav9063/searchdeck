@@ -82,7 +82,7 @@ Move selection and the right side updates immediately.
 
 ### Agent-Ready `@` References
 
-SearchDeck turns any selected result into a precise reference for agent programming. Press `Shift+Enter`, then paste directly into your coding-agent prompt or chat:
+SearchDeck turns any selected result into a precise reference for agent programming. Press `Alt+Enter`, then paste directly into your coding-agent prompt or chat:
 
 ```text
 @src/abc.js
@@ -126,8 +126,8 @@ All commands are contributed to VS Code, so users can change them in Keyboard Sh
 | Key | Action |
 | --- | --- |
 | `Enter` | Open selected result |
-| `Shift+Enter` | Copy selected `@path` reference |
-| `Alt+Enter` | Open selected result to side |
+| `Shift+Enter` | Open selected result to side |
+| `Alt+Enter` | Copy selected `@path` reference |
 | `Escape` | Clear query, or close tab if query is empty |
 | `Alt+J` / `ArrowDown` / `Ctrl+N` | Next result |
 | `Alt+K` / `ArrowUp` / `Ctrl+P` | Previous result |
