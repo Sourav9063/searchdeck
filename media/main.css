@@ -163,6 +163,10 @@ input {
   color: inherit;
 }
 
+.result-detail.overlayed {
+  visibility: hidden;
+}
+
 .fuzzy-match {
   color: var(--vscode-list-highlightForeground, var(--vscode-focusBorder));
   font-weight: 600;
@@ -176,9 +180,13 @@ input {
   position: fixed;
   z-index: 100;
   width: max-content;
-  padding: 3px 12px 3px 0;
+  padding: 5px 12px 5px 0;
   color: var(--vscode-list-focusForeground, var(--vscode-editor-foreground));
-  background: var(--vscode-list-focusBackground, var(--vscode-list-hoverBackground));
+  background-color: var(--vscode-editor-background);
+  background-image: linear-gradient(
+    var(--vscode-list-focusBackground, var(--vscode-list-hoverBackground)),
+    var(--vscode-list-focusBackground, var(--vscode-list-hoverBackground))
+  );
   white-space: nowrap;
   pointer-events: none;
 }

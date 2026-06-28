@@ -248,6 +248,7 @@
 
   function renderSelectedPathOverlay() {
     document.getElementById('selected-path-overlay')?.remove();
+    resultsRoot.querySelector('.result-detail.overlayed')?.classList.remove('overlayed');
 
     const selected = selectedResult();
     const selectedDetail = resultsRoot.querySelector('.result-row.selected .result-detail');
@@ -258,13 +259,14 @@
     const bounds = selectedDetail.getBoundingClientRect();
     const overlay = document.createElement('div');
     overlay.id = 'selected-path-overlay';
-    overlay.textContent = selected.relativePath;
+    appendTextWithMatches(overlay, selected.relativePath, selected.relativePathMatchPositions);
     overlay.title = selected.relativePath;
     overlay.style.left = `${bounds.left}px`;
-    overlay.style.top = `${bounds.top - 3}px`;
-    overlay.style.height = `${bounds.height + 6}px`;
+    overlay.style.top = `${bounds.top - 5}px`;
+    overlay.style.height = `${bounds.height + 10}px`;
     overlay.style.lineHeight = `${bounds.height}px`;
     overlay.style.maxWidth = `${window.innerWidth - bounds.left - 12}px`;
+    selectedDetail.classList.add('overlayed');
     document.body.appendChild(overlay);
   }
 
