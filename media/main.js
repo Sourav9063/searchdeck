@@ -27,6 +27,11 @@
   });
 
   document.addEventListener('keydown', (event) => {
+    if (event.altKey && event.code === 'Space') {
+      event.preventDefault();
+      return;
+    }
+
     if (event.key === 'Enter' && event.altKey) {
       event.preventDefault();
       vscode.postMessage({ type: 'copyReference' });
@@ -173,7 +178,6 @@
 
     if (message.type === 'focusSearch') {
       search.focus();
-      search.select();
       return;
     }
 
