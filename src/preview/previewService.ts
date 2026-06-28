@@ -50,8 +50,16 @@ export class PreviewService {
 
     const documentLines = content.split(/\r?\n/);
     const targetLine = result.line ?? 0;
-    const highlightStartCharacter = result.range?.start.character ?? result.character;
-    const highlightEndCharacter = result.range?.end.character;
+    let highlightStartCharacter = result.range?.start.character ?? result.character;
+    let highlightEndCharacter = result.range?.end.character;
+    if (result.section === 'symbols') {
+      const sourceLine = documentLines[targetLine] ?? '';
+      const providerStart = Math.max(0, result.character ?? 0);
+      const symbolStart = sourceLine.indexOf(result.symbolName, providerStart);
+      const fallbackStart = symbolStart >= 0 ? symbolStart : sourceLine.indexOf(result.symbolName);
+      highlightStartCharacter = fallbackStart >= 0 ? fallbackStart : undefined;
+      highlightEndCharacter = fallbackStart >= 0 ? fallbackStart + result.symbolName.length : undefined;
+    }
     const startLine = Math.max(0, targetLine - 80);
     const endLine = Math.min(documentLines.length - 1, targetLine + 160);
     const lines = documentLines.slice(startLine, endLine + 1);
@@ -62,10 +70,12 @@ export class PreviewService {
       languageId: languageIdForUri(result.uri),
       content: lines.join('\n'),
       startLine,
-      highlightLine: targetLine,
-      highlightStartCharacter,
-      highlightEndCharacter,
-      highlightLabel: result.section === 'symbols' ? `${result.kind}: ${result.label}` : result.section === 'text' ? 'Text match' : undefined
+      ...(result.section === 'files' ? {} : {
+        highlightLine: targetLine,
+        highlightStartCharacter,
+        highlightEndCharacter,
+        highlightLabel: result.section === 'symbols' ? `${result.kind}: ${result.label}` : 'Text match'
+      })
     };
   }
 }
