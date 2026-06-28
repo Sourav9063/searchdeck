@@ -34,7 +34,8 @@ export class FileSearch {
           relativePath,
           score,
           labelMatchPositions: fuzzyScore(trimmed, label).positions,
-          descriptionMatchPositions: fuzzyScore(trimmed, relativePath).positions
+          descriptionMatchPositions: fuzzyScore(trimmed, relativePath).positions,
+          relativePathMatchPositions: fuzzyScore(trimmed, relativePath).positions
         };
       })
       .filter((result) => !trimmed || result.score > 0);

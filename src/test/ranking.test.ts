@@ -52,6 +52,9 @@ function result(section: SearchResult['section'], label: string, score: number):
     uri: { toString: () => label } as never,
     relativePath: label,
     score,
+    labelMatchPositions: [],
+    descriptionMatchPositions: [],
+    relativePathMatchPositions: [],
     ...(section === 'text' ? { previewText: label } : {}),
     ...(section === 'symbols' ? { symbolName: label, kind: 'Function' } : {})
   } as SearchResult;

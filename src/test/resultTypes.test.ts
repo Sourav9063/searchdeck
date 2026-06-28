@@ -15,7 +15,8 @@ test('serializeResult keeps file fuzzy match positions', () => {
     relativePath: 'src/commands.ts',
     score: 100,
     labelMatchPositions: [0, 2, 4],
-    descriptionMatchPositions: [4, 6, 8]
+    descriptionMatchPositions: [4, 6, 8],
+    relativePathMatchPositions: [4, 6, 8]
   };
 
   assert.deepEqual(serializeResult(file), {
@@ -25,7 +26,8 @@ test('serializeResult keeps file fuzzy match positions', () => {
     description: 'src/commands.ts',
     relativePath: 'src/commands.ts',
     labelMatchPositions: [0, 2, 4],
-    descriptionMatchPositions: [4, 6, 8]
+    descriptionMatchPositions: [4, 6, 8],
+    relativePathMatchPositions: [4, 6, 8]
   });
 });
 
@@ -42,7 +44,10 @@ test('serializeResult sends only fields used by the webview', () => {
     character: 3,
     symbolName: 'example',
     containerName: 'Example',
-    kind: 'Function'
+    kind: 'Function',
+    labelMatchPositions: [0, 1, 2],
+    descriptionMatchPositions: [4, 5, 6],
+    relativePathMatchPositions: [4, 5, 6]
   };
 
   assert.deepEqual(serializeResult(symbol), {
@@ -50,7 +55,10 @@ test('serializeResult sends only fields used by the webview', () => {
     section: 'symbols',
     label: 'example',
     description: 'src/example.ts',
-    relativePath: 'src/example.ts'
+    relativePath: 'src/example.ts',
+    labelMatchPositions: [0, 1, 2],
+    descriptionMatchPositions: [4, 5, 6],
+    relativePathMatchPositions: [4, 5, 6]
   });
 });
 
@@ -63,7 +71,10 @@ test('serializeResult keeps text preview content', () => {
     uri,
     relativePath: 'src/example.ts',
     score: 50,
-    previewText: 'const example = true;'
+    previewText: 'const example = true;',
+    labelMatchPositions: [],
+    descriptionMatchPositions: [6, 7, 8],
+    relativePathMatchPositions: []
   };
 
   assert.equal(serializeResult(result).previewText, result.previewText);

@@ -94,7 +94,7 @@ When search input is empty:
 When user types:
 
 - Search files by fuzzy path match.
-- Highlight fuzzy-matched characters in file result filenames and paths.
+- Highlight query-matched characters in file, text, and symbol result labels and details.
 - Search text by `workspace.findTextInFiles`.
 - Search symbols by `vscode.executeWorkspaceSymbolProvider`.
 - Merge into three visible sections.

@@ -222,8 +222,10 @@
 
         const detail = document.createElement('span');
         detail.className = 'result-detail';
-        const detailText = result.id === state.selectedResultId ? result.relativePath : result.previewText || result.description;
-        appendTextWithMatches(detail, detailText, result.descriptionMatchPositions);
+        const selected = result.id === state.selectedResultId;
+        const detailText = selected ? result.relativePath : result.previewText || result.description;
+        const detailMatchPositions = selected ? result.relativePathMatchPositions : result.descriptionMatchPositions;
+        appendTextWithMatches(detail, detailText, detailMatchPositions);
         detail.title = result.relativePath;
 
         row.append(title, detail);

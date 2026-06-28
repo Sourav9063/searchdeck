@@ -64,7 +64,10 @@ export async function searchText(
         line,
         character,
         range,
-        previewText
+        previewText,
+        labelMatchPositions: fuzzyScore(trimmed, `${relativePath}:${line + 1}`).positions,
+        descriptionMatchPositions: fuzzyScore(trimmed, previewText).positions,
+        relativePathMatchPositions: fuzzyScore(trimmed, relativePath).positions
       });
     }
   }

@@ -10,6 +10,9 @@ export interface BaseResult {
   uri: vscode.Uri;
   relativePath: string;
   score: number;
+  labelMatchPositions: number[];
+  descriptionMatchPositions: number[];
+  relativePathMatchPositions: number[];
   line?: number;
   character?: number;
   range?: vscode.Range;
@@ -17,8 +20,6 @@ export interface BaseResult {
 
 export interface FileResult extends BaseResult {
   section: 'files';
-  labelMatchPositions: number[];
-  descriptionMatchPositions: number[];
 }
 
 export interface TextResult extends BaseResult {
@@ -56,8 +57,9 @@ export interface SerializedResult {
   description: string;
   relativePath: string;
   previewText?: string;
-  labelMatchPositions?: number[];
-  descriptionMatchPositions?: number[];
+  labelMatchPositions: number[];
+  descriptionMatchPositions: number[];
+  relativePathMatchPositions: number[];
 }
 
 export interface SerializedSection {
@@ -85,16 +87,14 @@ export function serializeResult(result: SearchResult): SerializedResult {
     section: result.section,
     label: result.label,
     description: result.description,
-    relativePath: result.relativePath
+    relativePath: result.relativePath,
+    labelMatchPositions: result.labelMatchPositions,
+    descriptionMatchPositions: result.descriptionMatchPositions,
+    relativePathMatchPositions: result.relativePathMatchPositions
   };
 
   if (result.section === 'text') {
     base.previewText = result.previewText;
-  }
-
-  if (result.section === 'files') {
-    base.labelMatchPositions = result.labelMatchPositions;
-    base.descriptionMatchPositions = result.descriptionMatchPositions;
   }
 
   return base;

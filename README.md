@@ -58,7 +58,7 @@ SearchDeck searches:
 - `Text`: workspace text matches
 - `Symbols`: workspace symbols from installed language extensions
 
-File results highlight the filename and path characters matched by the fuzzy query.
+File, text, and symbol results highlight characters matched by the query.
 
 When the input is empty, SearchDeck shows file results first, similar to Quick Open behavior.
 

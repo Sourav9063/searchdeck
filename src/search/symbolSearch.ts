@@ -28,6 +28,7 @@ export async function searchSymbols(query: string, maxResults: number, token: vs
 
   const results = symbols.slice(0, maxResults * 3).map((symbol, index) => {
     const relativePath = workspaceRelativePath(symbol.location.uri);
+    const description = `${symbol.containerName ? `${symbol.containerName} - ` : ''}${relativePath}`;
     const nameScore = fuzzyScore(trimmed, symbol.name).score;
     const containerScore = symbol.containerName ? fuzzyScore(trimmed, symbol.containerName).score : 0;
     const pathScore = fuzzyScore(trimmed, relativePath).score;
@@ -36,7 +37,7 @@ export async function searchSymbols(query: string, maxResults: number, token: vs
       id: `symbol:${symbol.location.uri.toString()}:${symbol.location.range.start.line}:${symbol.location.range.start.character}:${index}`,
       section: 'symbols' as const,
       label: symbol.name,
-      description: `${symbol.containerName ? `${symbol.containerName} - ` : ''}${relativePath}`,
+      description,
       uri: symbol.location.uri,
       relativePath,
       score: nameScore + Math.floor(containerScore / 2) + Math.floor(pathScore / 3),
@@ -45,7 +46,10 @@ export async function searchSymbols(query: string, maxResults: number, token: vs
       range: symbol.location.range,
       symbolName: symbol.name,
       containerName: symbol.containerName,
-      kind: vscode.SymbolKind[symbol.kind] ?? 'Symbol'
+      kind: vscode.SymbolKind[symbol.kind] ?? 'Symbol',
+      labelMatchPositions: fuzzyScore(trimmed, symbol.name).positions,
+      descriptionMatchPositions: fuzzyScore(trimmed, description).positions,
+      relativePathMatchPositions: fuzzyScore(trimmed, relativePath).positions
     };
   });
 
