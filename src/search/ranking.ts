@@ -118,6 +118,17 @@ export function buildSections(query: string, results: Record<SectionId, SearchRe
   });
 }
 
+export function preferTextSelection(sections: ResultSection[], selectedResultId: string | undefined): string | undefined {
+  const selectedSection = sections.find((section) =>
+    section.results.some((result) => result.id === selectedResultId)
+  );
+  if (selectedSection?.id !== 'symbols') {
+    return selectedResultId;
+  }
+
+  return sections.find((section) => section.id === 'text')?.results[0]?.id ?? selectedResultId;
+}
+
 export function promoteSelectedSection(sections: ResultSection[], selectedResultId: string | undefined): ResultSection[] {
   if (!selectedResultId) {
     return sections;

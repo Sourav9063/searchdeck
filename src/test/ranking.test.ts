@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { buildSections, fuzzyScore, promoteSelectedSection, scorePath } from '../search/ranking';
+import { buildSections, fuzzyScore, preferTextSelection, promoteSelectedSection, scorePath } from '../search/ranking';
 import type { SearchResult } from '../search/resultTypes';
 
 test('fuzzyScore rewards contiguous substring matches', () => {
@@ -33,6 +33,16 @@ test('buildSections reorders sections by strongest result category', () => {
   assert.equal(sections[2]?.id, 'files');
 });
 
+test('buildSections keeps score ordering between text and symbols', () => {
+  const sections = buildSections('needle', {
+    files: [result('files', 'a.ts', 70)],
+    text: [result('text', 'b.ts:1', 20)],
+    symbols: [result('symbols', 'NeedleSymbol', 100)]
+  });
+
+  assert.deepEqual(sections.map((section) => section.id), ['symbols', 'files', 'text']);
+});
+
 test('buildSections does not let many weaker matches outrank the strongest match', () => {
   const sections = buildSections('needle', {
     files: [result('files', 'needle.ts', 100)],
@@ -63,6 +73,30 @@ test('promoteSelectedSection moves the automatically selected result section fir
   const promoted = promoteSelectedSection(sections, 'files:needle.ts');
 
   assert.deepEqual(promoted.map((section) => section.id), ['files', 'symbols', 'text']);
+});
+
+test('preferTextSelection selects text when automatic selection points to a symbol', () => {
+  const sections = buildSections('needle', {
+    files: [result('files', 'needle.ts', 50)],
+    text: [result('text', 'needle.ts:1', 80)],
+    symbols: [result('symbols', 'NeedleSymbol', 100)]
+  });
+
+  const selectedResultId = preferTextSelection(sections, 'symbols:NeedleSymbol');
+
+  assert.equal(selectedResultId, 'text:needle.ts:1');
+});
+
+test('preferTextSelection does not replace an automatic file selection', () => {
+  const sections = buildSections('needle', {
+    files: [result('files', 'needle.ts', 50)],
+    text: [result('text', 'needle.ts:1', 80)],
+    symbols: [result('symbols', 'NeedleSymbol', 100)]
+  });
+
+  const selectedResultId = preferTextSelection(sections, 'files:needle.ts');
+
+  assert.equal(selectedResultId, 'files:needle.ts');
 });
 
 test('promoteSelectedSection keeps relevance order without a selected result', () => {

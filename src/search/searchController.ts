@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { PreviewService } from '../preview/previewService';
 import { SearchSession } from '../state/SearchSession';
 import { FileSearch } from './fileSearch';
-import { buildSections, promoteSelectedSection } from './ranking';
+import { buildSections, preferTextSelection, promoteSelectedSection } from './ranking';
 import type { SearchResult, SectionId } from './resultTypes';
 import { searchSymbols } from './symbolSearch';
 import { searchText } from './textSearch';
@@ -154,6 +154,7 @@ export class SearchController {
     this.session.sections = buildSections(query, grouped);
     this.session.keepValidSelection();
     if (!this.selectionIsManual) {
+      this.session.selectedResultId = preferTextSelection(this.session.sections, this.session.selectedResultId);
       this.session.sections = promoteSelectedSection(this.session.sections, this.session.selectedResultId);
     }
     this.sink.postState();
