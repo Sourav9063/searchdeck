@@ -218,11 +218,12 @@
 
         const title = document.createElement('span');
         title.className = 'result-title';
-        title.textContent = result.label;
+        appendTextWithMatches(title, result.label, result.labelMatchPositions);
 
         const detail = document.createElement('span');
         detail.className = 'result-detail';
-        detail.textContent = result.id === state.selectedResultId ? result.relativePath : result.previewText || result.description;
+        const detailText = result.id === state.selectedResultId ? result.relativePath : result.previewText || result.description;
+        appendTextWithMatches(detail, detailText, result.descriptionMatchPositions);
         detail.title = result.relativePath;
 
         row.append(title, detail);
@@ -263,6 +264,40 @@
     overlay.style.lineHeight = `${bounds.height}px`;
     overlay.style.maxWidth = `${window.innerWidth - bounds.left - 12}px`;
     document.body.appendChild(overlay);
+  }
+
+  function appendTextWithMatches(parent, value, positions) {
+    const text = String(value || '');
+    if (!Array.isArray(positions) || positions.length === 0) {
+      parent.textContent = text;
+      return;
+    }
+
+    let cursor = 0;
+    let positionIndex = 0;
+    while (positionIndex < positions.length) {
+      const start = positions[positionIndex];
+      if (start > cursor) {
+        parent.appendChild(document.createTextNode(text.slice(cursor, start)));
+      }
+
+      let end = start + 1;
+      positionIndex += 1;
+      while (positionIndex < positions.length && positions[positionIndex] === end) {
+        end += 1;
+        positionIndex += 1;
+      }
+
+      const match = document.createElement('span');
+      match.className = 'fuzzy-match';
+      match.textContent = text.slice(start, end);
+      parent.appendChild(match);
+      cursor = end;
+    }
+
+    if (cursor < text.length) {
+      parent.appendChild(document.createTextNode(text.slice(cursor)));
+    }
   }
 
   function renderPreview() {

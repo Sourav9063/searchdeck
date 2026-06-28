@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { scorePath, sortResults } from './ranking';
+import { fuzzyScore, scorePath, sortResults } from './ranking';
 import { filterGitIgnoredUris, resetGitIgnoreCache } from './gitIgnore';
 import { recentFileUris } from './recentFiles';
 import type { FileResult } from './resultTypes';
@@ -23,15 +23,18 @@ export class FileSearch {
     const results = candidates
       .map((uri) => {
         const relativePath = workspaceRelativePath(uri);
+        const label = basename(relativePath);
         const score = trimmed ? scorePath(trimmed, relativePath) : recentRank.get(uri.toString()) ?? 1;
         return {
           id: `file:${uri.toString()}`,
           section: 'files' as const,
-          label: basename(relativePath),
+          label,
           description: relativePath,
           uri,
           relativePath,
-          score
+          score,
+          labelMatchPositions: fuzzyScore(trimmed, label).positions,
+          descriptionMatchPositions: fuzzyScore(trimmed, relativePath).positions
         };
       })
       .filter((result) => !trimmed || result.score > 0);

@@ -163,6 +163,15 @@ input {
   color: inherit;
 }
 
+.fuzzy-match {
+  color: var(--vscode-list-highlightForeground, var(--vscode-focusBorder));
+  font-weight: 600;
+}
+
+.result-row.selected .fuzzy-match {
+  color: var(--vscode-list-focusHighlightForeground, var(--vscode-list-highlightForeground, var(--vscode-focusBorder)));
+}
+
 #selected-path-overlay {
   position: fixed;
   z-index: 100;

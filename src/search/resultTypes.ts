@@ -17,6 +17,8 @@ export interface BaseResult {
 
 export interface FileResult extends BaseResult {
   section: 'files';
+  labelMatchPositions: number[];
+  descriptionMatchPositions: number[];
 }
 
 export interface TextResult extends BaseResult {
@@ -54,6 +56,8 @@ export interface SerializedResult {
   description: string;
   relativePath: string;
   previewText?: string;
+  labelMatchPositions?: number[];
+  descriptionMatchPositions?: number[];
 }
 
 export interface SerializedSection {
@@ -86,6 +90,11 @@ export function serializeResult(result: SearchResult): SerializedResult {
 
   if (result.section === 'text') {
     base.previewText = result.previewText;
+  }
+
+  if (result.section === 'files') {
+    base.labelMatchPositions = result.labelMatchPositions;
+    base.descriptionMatchPositions = result.descriptionMatchPositions;
   }
 
   return base;

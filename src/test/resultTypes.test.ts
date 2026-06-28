@@ -1,9 +1,33 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import type { SymbolResult, TextResult } from '../search/resultTypes';
+import type { FileResult, SymbolResult, TextResult } from '../search/resultTypes';
 import { serializeResult } from '../search/resultTypes';
 
 const uri = { toString: () => 'file:///workspace/src/example.ts' } as never;
+
+test('serializeResult keeps file fuzzy match positions', () => {
+  const file: FileResult = {
+    id: 'file:example',
+    section: 'files',
+    label: 'commands.ts',
+    description: 'src/commands.ts',
+    uri,
+    relativePath: 'src/commands.ts',
+    score: 100,
+    labelMatchPositions: [0, 2, 4],
+    descriptionMatchPositions: [4, 6, 8]
+  };
+
+  assert.deepEqual(serializeResult(file), {
+    id: 'file:example',
+    section: 'files',
+    label: 'commands.ts',
+    description: 'src/commands.ts',
+    relativePath: 'src/commands.ts',
+    labelMatchPositions: [0, 2, 4],
+    descriptionMatchPositions: [4, 6, 8]
+  });
+});
 
 test('serializeResult sends only fields used by the webview', () => {
   const symbol: SymbolResult = {
